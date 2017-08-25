@@ -47,9 +47,8 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
 #' @rdname spell_check
 #' @export
 #' @param path file with supported file extension
-spell_check_file <- function(path, type = NULL, ignore = character(), dict = "en_US"){
-  if(!length(type))
-    type <- guess_type(type)
+spell_check_file <- function(path, ignore = character(), dict = "en_US"){
+  stop("not yet implemented")
 }
 
 #' @rdname spell_check
