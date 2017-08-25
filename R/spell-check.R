@@ -15,8 +15,12 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   ignore <- c(pkg$package, hunspell::en_stats, ignore)
 
   # Check Rd manual files
-  rd_files <- list.files(file.path(pkg$path, "man"), "\\.Rd$", full.names = TRUE)
+  rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
   rd_lines <- lapply(sort(rd_files), spell_check_file_rd, ignore = ignore, dict = dict)
+
+  # Markdown vignettes
+  md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
+  md_lines <- lapply(sort(md_files), spell_check_file_md, ignore = ignore, dict = dict)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
@@ -25,8 +29,8 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   })
 
   # Combine
-  all_sources <- c(rd_files, pkg_fields)
-  all_lines <- c(rd_lines, pkg_lines)
+  all_sources <- c(rd_files, md_files, pkg_fields)
+  all_lines <- c(rd_lines, md_lines, pkg_lines)
   words_by_file <- lapply(all_lines, names)
   bad_words <- sort(unique(unlist(words_by_file)))
 
@@ -43,8 +47,9 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
 #' @rdname spell_check
 #' @export
 #' @param path file with supported file extension
-spell_check_file <- function(path, ignore = character(), dict = "en_US"){
-
+spell_check_file <- function(path, type = NULL, ignore = character(), dict = "en_US"){
+  if(!length(type))
+    type <- guess_type(type)
 }
 
 #' @rdname spell_check
@@ -83,9 +88,10 @@ spell_check_file_rd <- function(rdfile, ignore, dict){
 
 spell_check_file_md <- function(path, ignore, dict){
   words <- parse_text_md(path)
+  words$startline <- vapply(strsplit(words$position, ":", fixed = TRUE), `[[`, character(1), 1)
   bad_words <- hunspell::hunspell(words$text, ignore = ignore, dict = dict)
   vapply(sort(unique(unlist(bad_words))), function(word) {
     line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
-    paste(line_numbers, collapse = ",")
+    paste(words$startline[line_numbers], collapse = ",")
   }, character(1))
 }
