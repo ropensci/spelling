@@ -5,7 +5,7 @@ Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
     person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
 Description: Automated spell checking for commmonly used document formats including 
-    latex, rmarkdown and roxygen.
+    latex, rmarkdown, roxygen, and description files.
 Depends: R (>= 3.4.1)
 License: MIT + file LICENSE
 Encoding: UTF-8
