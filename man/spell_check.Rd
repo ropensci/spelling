@@ -6,7 +6,8 @@
 \alias{spell_check_text}
 \title{Spell Check Package}
 \usage{
-spell_check_package(pkg = ".", ignore = character(), dict = "en_US")
+spell_check_package(pkg = ".", vignettes = TRUE, ignore = character(),
+  dict = "en_US")
 
 spell_check_file(path, ignore = character(), dict = "en_US")
 
@@ -14,6 +15,8 @@ spell_check_text(text, ignore = character(), dict = "en_US")
 }
 \arguments{
 \item{pkg}{package description, can be path or package name. Passed to \link[devtools:as.package]{devtools::as.package}.}
+
+\item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder.}
 
 \item{ignore}{character vector with words to ignore. Passed to \link[hunspell:hunspell]{hunspell}.}
 
@@ -24,7 +27,9 @@ spell_check_text(text, ignore = character(), dict = "en_US")
 \item{text}{character vector with plain text}
 }
 \description{
-Runs a spell check on text fields in the package description file and manual pages.
+Runs a spell check on text fields in the package description file, manual pages, and vignettes.
+}
+\details{
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }

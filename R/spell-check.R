@@ -1,15 +1,17 @@
 #' Spell Check Package
 #'
-#' Runs a spell check on text fields in the package description file and manual pages.
+#' Runs a spell check on text fields in the package description file, manual pages, and vignettes.
+#'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
 #'
 #' @export
 #' @rdname spell_check
 #' @param pkg package description, can be path or package name. Passed to [devtools::as.package].
+#' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder.
 #' @param ignore character vector with words to ignore. Passed to [hunspell][hunspell::hunspell].
 #' @param dict a dictionary object or language string. Passed to [hunspell][hunspell::hunspell].
-spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US"){
+spell_check_package <- function(pkg = ".", vignettes = TRUE, ignore = character(), dict = "en_US"){
 
   pkg <- devtools::as.package(pkg)
   ignore <- c(pkg$package, hunspell::en_stats, ignore)
@@ -18,14 +20,6 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
   rd_lines <- lapply(sort(rd_files), spell_check_file_rd, ignore = ignore, dict = dict)
 
-  # Markdown vignettes
-  md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
-  md_lines <- lapply(sort(md_files), spell_check_file_md, ignore = ignore, dict = dict)
-
-  # Sweave vignettes
-  rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
-  rnw_lines <- lapply(sort(rnw_files), spell_check_file_rnw, ignore = ignore, dict = dict)
-
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
@@ -33,8 +27,23 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   })
 
   # Combine
-  all_sources <- c(rd_files, md_files, rnw_files, pkg_fields)
-  all_lines <- c(rd_lines, md_lines, rnw_lines, pkg_lines)
+  all_sources <- c(rd_files, pkg_fields)
+  all_lines <- c(rd_lines, pkg_lines)
+
+  if(isTRUE(vignettes)){
+    # Markdown vignettes
+    md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
+    md_lines <- lapply(sort(md_files), spell_check_file_md, ignore = ignore, dict = dict)
+
+    # Sweave vignettes
+    rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
+    rnw_lines <- lapply(sort(rnw_files), spell_check_file_rnw, ignore = ignore, dict = dict)
+
+    # Combine
+    all_sources <- c(all_sources, md_files, rnw_files)
+    all_lines <- c(all_lines, md_lines, rnw_lines)
+  }
+
   words_by_file <- lapply(all_lines, names)
   bad_words <- sort(unique(unlist(words_by_file)))
 
