@@ -1,0 +1,20 @@
+Package: spelling
+Title: Tools for Spell Checking in R
+Version: 0.1
+Authors@R: c(
+    person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
+    person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
+Description: Automated spell checking for commmonly used document formats including 
+    latex, rmarkdown and roxygen.
+Depends: R (>= 3.4.1)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  commonmark,
+  xml2, 
+  hunspell
+Enhances:
+  devtools
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1

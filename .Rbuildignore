@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^src/.*\.a$
+^src/.*\.o$
+^appveyor\.yml$
+^.travis.yml$
+^README.md$
