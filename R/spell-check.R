@@ -7,10 +7,10 @@
 #'
 #' @export
 #' @rdname spell_check
-#' @param path root directory of source package; must contain a `DESCRIPTION` file
-#' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder.
-#' @param ignore character vector with words to ignore. Passed to [hunspell][hunspell::hunspell].
-#' @param dict a dictionary object or language string. Passed to [hunspell][hunspell::hunspell].
+#' @param path path to file or package root directory containing the `DESCRIPTION` file
+#' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
+#' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
+#' @param dict a dictionary object or language string for [hunspell][hunspell::hunspell]
 spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character(), dict = "en_US"){
   if(inherits(path, 'package')){
     pkg <- path
@@ -66,7 +66,6 @@ spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character
 
 #' @rdname spell_check
 #' @export
-#' @param path file with supported file extension
 spell_check_file <- function(path, ignore = character(), dict = "en_US"){
   stop("not yet implemented")
 }

@@ -14,17 +14,15 @@ spell_check_file(path, ignore = character(), dict = "en_US")
 spell_check_text(text, ignore = character(), dict = "en_US")
 }
 \arguments{
-\item{path}{root directory of source package; must contain a \code{DESCRIPTION} file}
+\item{path}{path to file or package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder.}
+\item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder}
 
-\item{ignore}{character vector with words to ignore. Passed to \link[hunspell:hunspell]{hunspell}.}
+\item{ignore}{character vector with words to ignore in \link[hunspell:hunspell]{hunspell}}
 
-\item{dict}{a dictionary object or language string. Passed to \link[hunspell:hunspell]{hunspell}.}
+\item{dict}{a dictionary object or language string for \link[hunspell:hunspell]{hunspell}}
 
 \item{text}{character vector with plain text}
-
-\item{path}{file with supported file extension}
 }
 \description{
 Runs a spell check on text fields in the package description file, manual pages, and vignettes.
