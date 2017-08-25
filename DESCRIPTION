@@ -16,7 +16,5 @@ Imports:
   hunspell
 Suggests:
   knitr
-Enhances:
-  devtools
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1

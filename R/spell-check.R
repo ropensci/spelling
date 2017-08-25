@@ -7,13 +7,20 @@
 #'
 #' @export
 #' @rdname spell_check
-#' @param pkg package description, can be path or package name. Passed to [devtools::as.package].
+#' @param path root directory of source package; must contain a `DESCRIPTION` file
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder.
 #' @param ignore character vector with words to ignore. Passed to [hunspell][hunspell::hunspell].
 #' @param dict a dictionary object or language string. Passed to [hunspell][hunspell::hunspell].
-spell_check_package <- function(pkg = ".", vignettes = TRUE, ignore = character(), dict = "en_US"){
+spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character(), dict = "en_US"){
+  if(inherits(path, 'package')){
+    pkg <- path
+  } else {
+    description <- normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
+    pkg <- as.list(read.dcf(description)[1,])
+    names(pkg) <- tolower(names(pkg))
+    pkg$path <- dirname(description)
+  }
 
-  pkg <- devtools::as.package(pkg)
   ignore <- c(pkg$package, hunspell::en_stats, ignore)
 
   # Check Rd manual files
