@@ -22,6 +22,10 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
   md_lines <- lapply(sort(md_files), spell_check_file_md, ignore = ignore, dict = dict)
 
+  # Sweave vignettes
+  rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
+  rnw_lines <- lapply(sort(rnw_files), spell_check_file_rnw, ignore = ignore, dict = dict)
+
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
@@ -29,8 +33,8 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   })
 
   # Combine
-  all_sources <- c(rd_files, md_files, pkg_fields)
-  all_lines <- c(rd_lines, md_lines, pkg_lines)
+  all_sources <- c(rd_files, md_files, rnw_files, pkg_fields)
+  all_lines <- c(rd_lines, md_lines, rnw_lines, pkg_lines)
   words_by_file <- lapply(all_lines, names)
   bad_words <- sort(unique(unlist(words_by_file)))
 
@@ -82,6 +86,13 @@ spell_check_file_text <- function(file, ignore, dict){
 
 spell_check_file_rd <- function(rdfile, ignore, dict){
   text <- tools::RdTextFilter(rdfile)
+  spell_check_text(text, ignore = ignore, dict = dict)
+}
+
+spell_check_file_rnw <- function(path, ignore, dict){
+  latex <- remove_chunks(path)
+  words <- hunspell::hunspell_parse(latex, format = "latex", dict = dict)
+  text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_text(text, ignore = ignore, dict = dict)
 }
 
