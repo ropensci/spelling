@@ -8,8 +8,8 @@
 
 > Tools for Spell Checking in R
 
-Automated spell checking for commmonly used document formats including latex, rmarkdown, roxygen, 
-and description files
+Automated spell checking for common document formats including latex,
+markdown, manual pages, and description files
 
 ## Installation
 
