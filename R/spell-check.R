@@ -16,12 +16,12 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
 
   # Check Rd manual files
   rd_files <- list.files(file.path(pkg$path, "man"), "\\.Rd$", full.names = TRUE)
-  rd_lines <- lapply(sort(rd_files), spell_check_rd, ignore = ignore, dict = dict)
+  rd_lines <- lapply(sort(rd_files), spell_check_file_rd, ignore = ignore, dict = dict)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
-    spell_check_file(textConnection(pkg[[x]]), ignore = ignore, dict = dict)
+    spell_check_file_text(textConnection(pkg[[x]]), ignore = ignore, dict = dict)
   })
 
   # Combine
@@ -40,6 +40,24 @@ spell_check_package <- function(pkg = ".", ignore = character(), dict = "en_US")
   structure(out, names = bad_words, class = "spellcheck")
 }
 
+#' @rdname spell_check
+#' @export
+#' @param path file with supported file extension
+spell_check_file <- function(path, ignore = character(), dict = "en_US"){
+
+}
+
+#' @rdname spell_check
+#' @export
+#' @param text character vector with plain text
+spell_check_text <- function(text, ignore = character(), dict = "en_US"){
+  bad_words <- hunspell::hunspell(text, ignore = ignore, dict = dict)
+  vapply(sort(unique(unlist(bad_words))), function(word) {
+    line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
+    paste(line_numbers, collapse = ",")
+  }, character(1))
+}
+
 #' @export
 print.spellcheck <- function(x, ...){
   words <- names(x)
@@ -54,19 +72,20 @@ print.spellcheck <- function(x, ...){
   invisible(x)
 }
 
-spell_check_text <- function(text, ignore, dict){
-  bad_words <- hunspell::hunspell(text, ignore = ignore, dict = dict)
+spell_check_file_text <- function(file, ignore, dict){
+  spell_check_text(readLines(file), ignore = ignore, dict = dict)
+}
+
+spell_check_file_rd <- function(rdfile, ignore, dict){
+  text <- tools::RdTextFilter(rdfile)
+  spell_check_text(text, ignore = ignore, dict = dict)
+}
+
+spell_check_file_md <- function(path, ignore, dict){
+  words <- parse_text_md(path)
+  bad_words <- hunspell::hunspell(words$text, ignore = ignore, dict = dict)
   vapply(sort(unique(unlist(bad_words))), function(word) {
     line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
     paste(line_numbers, collapse = ",")
   }, character(1))
-}
-
-spell_check_file <- function(file, ignore, dict){
-  spell_check_text(readLines(file), ignore = ignore, dict = dict)
-}
-
-spell_check_rd <- function(rdfile, ignore, dict){
-  text <- tools::RdTextFilter(rdfile)
-  spell_check_text(text, ignore = ignore, dict = dict)
 }

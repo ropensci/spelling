@@ -2,9 +2,15 @@
 % Please edit documentation in R/spell-check.R
 \name{spell_check_package}
 \alias{spell_check_package}
+\alias{spell_check_file}
+\alias{spell_check_text}
 \title{Spell Check Package}
 \usage{
 spell_check_package(pkg = ".", ignore = character(), dict = "en_US")
+
+spell_check_file(path, ignore = character(), dict = "en_US")
+
+spell_check_text(text, ignore = character(), dict = "en_US")
 }
 \arguments{
 \item{pkg}{package description, can be path or package name. Passed to \link[devtools:as.package]{devtools::as.package}.}
@@ -12,6 +18,10 @@ spell_check_package(pkg = ".", ignore = character(), dict = "en_US")
 \item{ignore}{character vector with words to ignore. Passed to \link[hunspell:hunspell]{hunspell}.}
 
 \item{dict}{a dictionary object or language string. Passed to \link[hunspell:hunspell]{hunspell}.}
+
+\item{path}{file with supported file extension}
+
+\item{text}{character vector with plain text}
 }
 \description{
 Runs a spell check on text fields in the package description file and manual pages.
