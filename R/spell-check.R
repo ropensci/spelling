@@ -100,8 +100,10 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
   writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
     deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
-  file.copy(system.file("templates/spelling.Rout.save", package = 'spelling'), file.path(pkg$path, "tests"))
-  cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
+  file.copy(system.file("templates/spelling.Rout.save", package = 'spelling'), file.path(pkg$path, "tests/spelling.Rout.save"))
+  cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R{out.save}")))
+  cat("Success! Make sure to save all 3 files: 'inst/WORDLIST', 'tests/spelling.R', and 'tests/spellig.Rout.save'\n")
+  try(add_to_description(file.path(pkg$path, "DESCRIPTION")))
 }
 
 #' @export
@@ -122,4 +124,14 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
     }
   }
   cat("All Done!\n")
+}
+
+add_to_description <- function(desc){
+  lines <- readLines(desc, warn = FALSE)
+  out <- if(!any(grepl("^Suggests", lines))){
+    c(lines, "Suggests:\n    spelling")
+  } else {
+    sub("^Suggests:", "Suggests:\n    spelling,", lines)
+  }
+  writeLines(out, desc)
 }
