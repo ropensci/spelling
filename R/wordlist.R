@@ -29,7 +29,7 @@ update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confir
     }
     if(isTRUE(confirm) && length(words_added)){
       cat("Are you sure you want to update the wordlist?")
-      if (!interactive() || utils::menu(c("Yes", "No")) != 1){
+      if (utils::menu(c("Yes", "No")) != 1){
         return(invisible())
       }
     }

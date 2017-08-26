@@ -26,5 +26,6 @@ the file \code{inst/WORDLIST} in the source package and is used to whitelist cus
 that will be added to the dictionary when spell checking.
 }
 \seealso{
-Other spelling: \code{\link{spell_check}}
+Other spelling: \code{\link{spell_check}},
+  \code{\link{spell_test_run}}
 }
