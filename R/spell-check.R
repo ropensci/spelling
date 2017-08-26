@@ -2,8 +2,8 @@
 #'
 #' Perform a spell check on manual pages, vignettes, description files and other formats.
 #'
-#' The `spell_check_package()` checks the package manual pages, rmd/rnw vignettes, and text
-#' fields in the DESCRIPTION file. The file `tools/wordlist.txt` can be used to whitelist
+#' The [spell_check_package] function checks the package manual pages, rmd/rnw vignettes,
+#' and text fields in the `DESCRIPTION` file. The file `tools/wordlist.txt` can be used to whitelist
 #' custom words in your package, which will be added to the dictionary before checking.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
@@ -75,7 +75,7 @@ summarize_words <- function(file_names, found_line){
       paste0(basename(file_names[i]), ":", found_line[[i]][word])
     }, character(1))
   })
-  structure(out, names = bad_words, class = "spellcheck")
+  structure(out, names = bad_words, class = "summary_spellcheck")
 }
 
 #' @rdname spell_check
@@ -122,7 +122,7 @@ spell_check_plain <- function(text, dict){
 }
 
 #' @export
-print.spellcheck <- function(x, ...){
+print.summary_spellcheck <- function(x, ...){
   words <- names(x)
   fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
   pretty_names <- sprintf(fmt, words)

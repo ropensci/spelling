@@ -27,9 +27,9 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 Perform a spell check on manual pages, vignettes, description files and other formats.
 }
 \details{
-The \code{spell_check_package()} checks the package manual pages, rmd/rnw vignettes, and text
-fields in the DESCRIPTION file. The file \code{tools/wordlist.txt} can be used to define a
-list of allowed words for your package.
+The \link{spell_check_package} function checks the package manual pages, rmd/rnw vignettes,
+and text fields in the \code{DESCRIPTION} file. The file \code{tools/wordlist.txt} can be used to whitelist
+custom words in your package, which will be added to the dictionary before checking.
 
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
