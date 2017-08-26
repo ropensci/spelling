@@ -4,7 +4,7 @@
 \alias{wordlist}
 \alias{update_wordlist}
 \alias{get_wordlist}
-\title{Update Wordlist}
+\title{Update WORDLIST file}
 \usage{
 update_wordlist(path = ".", vignettes = TRUE, lang = "en_US",
   confirm = TRUE)
@@ -18,10 +18,10 @@ get_wordlist(path = ".")
 
 \item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{confirm}{show changes and ask confirmation before writing changes}
+\item{confirm}{show changes and ask confirmation before adding new words to the list}
 }
 \description{
 Read and update the wordlist included with a package. The wordlist is stored in
-the file \code{inst/WORDLIST} in the source package and is be used to whitelist
-custom words that will be added to the dictionary when spell checking.
+the file \code{inst/WORDLIST} in the source package and is used to whitelist custom words
+that will be added to the dictionary when spell checking.
 }

@@ -3,8 +3,8 @@
 #' Perform a spell check on manual pages, vignettes, description files and other formats.
 #'
 #' The [spell_check_package] function checks the package manual pages, rmd/rnw vignettes,
-#' and text fields in the `DESCRIPTION` file. The [wordlist] can be used to whitelist
-#' custom words in your package, which will be added to the dictionary before checking.
+#' and text fields in the `DESCRIPTION` file. The [WORDLIST][get_wordlist] can be used to whitelist
+#' custom words in your package, which will be added to the dictionary when spell checking.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
@@ -16,7 +16,7 @@
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
 #' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
 #' @param lang string with dictionary language string for [hunspell::dictionary][hunspell::dictionary]
-#' @param use_wordlist ignore words in the package [wordlist][get_wordlist]
+#' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist]
 spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
   if(inherits(path, 'package')){
     pkg <- path

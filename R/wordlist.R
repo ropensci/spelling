@@ -1,19 +1,20 @@
-#' Update Wordlist
+#' Update WORDLIST file
 #'
 #' Read and update the wordlist included with a package. The wordlist is stored in
-#' the file `inst/WORDLIST` in the source package and is be used to whitelist
-#' custom words that will be added to the dictionary when spell checking.
+#' the file `inst/WORDLIST` in the source package and is used to whitelist custom words
+#' that will be added to the dictionary when spell checking.
 #'
 #' @rdname wordlist
 #' @name wordlist
 #' @export
-#' @param confirm show changes and ask confirmation before writing changes
+#' @param confirm show changes and ask confirmation before adding new words to the list
 #' @inheritParams spell_check
 update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confirm = TRUE){
-  old_words <- sort(get_wordlist())
+  wordfile <- get_wordfile(path)
+  old_words <- sort(get_wordlist(path))
   new_words <- sort(names(spell_check_package(path, vignettes = vignettes, lang = lang, use_wordlist = FALSE)))
   if(isTRUE(all.equal(old_words, new_words))){
-    cat("No changes required to wordlist\n")
+    cat(sprintf("No changes required to %s\n", wordfile))
   } else {
     words_added <- new_words[is.na(match(new_words, old_words))]
     words_removed <- old_words[is.na(match(old_words, new_words))]
@@ -25,7 +26,7 @@ update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confir
       cat(sprintf("The following words were removed from the wordlist:\n%s\n",
           paste(" -", words_removed, collapse = "\n")))
     }
-    if(isTRUE(confirm)){
+    if(isTRUE(confirm) && length(words_added)){
       cat("Are you sure you want to update the wordlist?")
       if (!interactive() || utils::menu(c("Yes", "No")) != 1){
         return(invisible())
@@ -33,9 +34,9 @@ update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confir
     }
 
     # Save as UTF-8
-    wordfile <- get_wordfile(path)
     dir.create(dirname(wordfile), showWarnings = FALSE)
     writeLines(enc2utf8(new_words), wordfile, useBytes = TRUE)
+    cat(sprintf("Added %d and removed %d words in %s\n", length(words_added), length(words_removed), wordfile))
   }
 }
 

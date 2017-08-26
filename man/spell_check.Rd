@@ -21,7 +21,7 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 
 \item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{use_wordlist}{ignore words in the package \link[=get_wordlist]{wordlist}}
+\item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST}}
 
 \item{ignore}{character vector with words to ignore in \link[hunspell:hunspell]{hunspell}}
 
@@ -32,8 +32,8 @@ Perform a spell check on manual pages, vignettes, description files and other fo
 }
 \details{
 The \link{spell_check_package} function checks the package manual pages, rmd/rnw vignettes,
-and text fields in the \code{DESCRIPTION} file. The \link{wordlist} can be used to whitelist
-custom words in your package, which will be added to the dictionary before checking.
+and text fields in the \code{DESCRIPTION} file. The \link[=get_wordlist]{WORDLIST} can be used to whitelist
+custom words in your package, which will be added to the dictionary when spell checking.
 
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
