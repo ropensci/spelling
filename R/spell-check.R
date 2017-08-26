@@ -110,7 +110,10 @@ spell_check_file_one <- function(path, dict){
 #' @param text character vector with plain text
 spell_check_text <- function(text, ignore = character(), lang = "en_US"){
   dict <- hunspell::dictionary(lang, add_words = ignore)
-  spell_check_plain(text, dict)
+  bad_words <- hunspell::hunspell(text, dict = dict)
+  out <- sapply(sort(unique(unlist(bad_words))), function(word) {
+    which(vapply(bad_words, `%in%`, x = word, logical(1)))
+  }, simplify = FALSE)
 }
 
 spell_check_plain <- function(text, dict){
