@@ -31,3 +31,8 @@ Runs a spell check on text fields in the package description file, manual pages,
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }
+\examples{
+# Example files
+spell_check_file(system.file("examples/knitr-manual.Rnw", package = "knitr"))
+spell_check_file(system.file("misc/tikz2pdf.tex", package = "knitr"))
+}

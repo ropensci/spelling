@@ -25,9 +25,15 @@ remove_chunks <- function(path) {
   return(lines)
 }
 
+file_ext <- function(...){
+  utils::getFromNamespace('file_ext', 'knitr')(...)
+}
+
+detect_pattern <- function(...){
+  utils::getFromNamespace('detect_pattern', 'knitr')(...)
+}
+
 get_knitr_pattern <- function(filename, lines) {
-  detect_pattern <- utils::getFromNamespace('detect_pattern', 'knitr')
-  file_ext <- utils::getFromNamespace('file_ext', 'knitr')
   pattern <- detect_pattern(lines, tolower(file_ext(filename)))
   if (!is.null(pattern)) {
     knitr::all_patterns[[pattern]]
