@@ -11,8 +11,8 @@
 #' @param path path to file or package root directory containing the `DESCRIPTION` file
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
 #' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
-#' @param dict a dictionary object or language string for [hunspell][hunspell::hunspell]
-spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character(), dict = "en_US"){
+#' @param lang string with dictionary language string for [hunspell::dictionary][hunspell::dictionary]
+spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US"){
   if(inherits(path, 'package')){
     pkg <- path
   } else {
@@ -22,16 +22,23 @@ spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character
     pkg$path <- dirname(description)
   }
 
-  ignore <- c(pkg$package, hunspell::en_stats, ignore)
+  # Add custom words to the ignore list
+  wordfile <- normalizePath(file.path(path, "tools/wordlist"), mustWork = FALSE)
+  wordlist <- if(file.exists(wordfile))
+    readLines(wordfile, warn = FALSE)
+  ignore <- c(pkg$package, hunspell::en_stats, wordlist)
+
+  # Create the hunspell dictionary object
+  dict <- hunspell::dictionary(lang, add_words = ignore)
 
   # Check Rd manual files
   rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
-  rd_lines <- lapply(sort(rd_files), spell_check_file_rd, ignore = ignore, dict = dict)
+  rd_lines <- lapply(sort(rd_files), spell_check_file_rd, dict = dict)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
-    spell_check_file_text(textConnection(pkg[[x]]), ignore = ignore, dict = dict)
+    spell_check_file_text(textConnection(pkg[[x]]), dict = dict)
   })
 
   # Combine
@@ -41,11 +48,11 @@ spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character
   if(isTRUE(vignettes)){
     # Markdown vignettes
     md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
-    md_lines <- lapply(sort(md_files), spell_check_file_md, ignore = ignore, dict = dict)
+    md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
 
     # Sweave vignettes
     rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
-    rnw_lines <- lapply(sort(rnw_files), spell_check_file_knitr, format = "latex", ignore = ignore, dict = dict)
+    rnw_lines <- lapply(sort(rnw_files), spell_check_file_knitr, format = "latex", dict = dict)
 
     # Combine
     all_sources <- c(all_sources, md_files, rnw_files)
@@ -73,31 +80,37 @@ summarize_words <- function(file_names, found_line){
 #' files <- list.files(system.file("examples", package = "knitr"),
 #'   pattern = "\\.(Rnw|Rmd|html)$", full.names = TRUE)
 #' spell_check_files(files)
-spell_check_files <- function(path, ignore = character(), dict = "en_US"){
+spell_check_files <- function(path, ignore = character(), lang = "en_US"){
+  dict <- hunspell::dictionary(lang, add_words = ignore)
   path <- normalizePath(path, mustWork = TRUE)
-  lines <- lapply(sort(path), spell_check_file_one, ignore = ignore, dict = dict)
+  lines <- lapply(sort(path), spell_check_file_one, dict = dict)
   summarize_words(path, lines)
 }
 
-spell_check_file_one <- function(path, ignore = character(), dict = "en_US"){
+spell_check_file_one <- function(path, dict){
   if(grepl("\\.r?md$",path, ignore.case = TRUE))
-    return(spell_check_file_md(path, ignore = ignore, dict = dict))
+    return(spell_check_file_md(path, dict = dict))
   if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
-    return(spell_check_file_knitr(path = path, format = "latex", ignore = ignore, dict = dict))
+    return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
   if(grepl("\\.(tex)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "latex", ignore = ignore, dict = dict))
+    return(spell_check_file_plain(path = path, format = "latex", dict = dict))
   if(grepl("\\.(html?)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "html", ignore = ignore, dict = dict))
+    return(spell_check_file_plain(path = path, format = "html", dict = dict))
   if(grepl("\\.(xml)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "xml", ignore = ignore, dict = dict))
-  return(spell_check_file_plain(path = path, format = "text", ignore = ignore, dict = dict))
+    return(spell_check_file_plain(path = path, format = "xml", dict = dict))
+  return(spell_check_file_plain(path = path, format = "text", dict = dict))
 }
 
 #' @rdname spell_check
 #' @export
 #' @param text character vector with plain text
-spell_check_text <- function(text, ignore = character(), dict = "en_US"){
-  bad_words <- hunspell::hunspell(text, ignore = ignore, dict = dict)
+spell_check_text <- function(text, ignore = character(), lang = "en_US"){
+  dict <- hunspell::dictionary(lang, add_words = ignore)
+  spell_check_plain(text, dict)
+}
+
+spell_check_plain <- function(text, dict){
+  bad_words <- hunspell::hunspell(text, dict = dict)
   vapply(sort(unique(unlist(bad_words))), function(word) {
     line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
     paste(line_numbers, collapse = ",")
@@ -118,35 +131,35 @@ print.spellcheck <- function(x, ...){
   invisible(x)
 }
 
-spell_check_file_text <- function(file, ignore, dict){
-  spell_check_text(readLines(file), ignore = ignore, dict = dict)
+spell_check_file_text <- function(file, dict){
+  spell_check_plain(readLines(file), dict = dict)
 }
 
-spell_check_file_rd <- function(rdfile, ignore, dict){
+spell_check_file_rd <- function(rdfile, dict){
   text <- tools::RdTextFilter(rdfile)
-  spell_check_text(text, ignore = ignore, dict = dict)
+  spell_check_plain(text, dict = dict)
 }
 
-spell_check_file_md <- function(path, ignore, dict){
+spell_check_file_md <- function(path, dict){
   words <- parse_text_md(path)
   words$startline <- vapply(strsplit(words$position, ":", fixed = TRUE), `[[`, character(1), 1)
-  bad_words <- hunspell::hunspell(words$text, ignore = ignore, dict = dict)
+  bad_words <- hunspell::hunspell(words$text, dict = dict)
   vapply(sort(unique(unlist(bad_words))), function(word) {
     line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
     paste(words$startline[line_numbers], collapse = ",")
   }, character(1))
 }
 
-spell_check_file_knitr <- function(path, format, ignore, dict){
+spell_check_file_knitr <- function(path, format, dict){
   latex <- remove_chunks(path)
   words <- hunspell::hunspell_parse(latex, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
-  spell_check_text(text, ignore = ignore, dict = dict)
+  spell_check_plain(text, dict = dict)
 }
 
-spell_check_file_plain <- function(path, format, ignore, dict){
+spell_check_file_plain <- function(path, format, dict){
   lines <- readLines(path, warn = FALSE)
   words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
-  spell_check_text(text, ignore = ignore, dict = dict)
+  spell_check_plain(text, dict = dict)
 }

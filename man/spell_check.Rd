@@ -6,21 +6,20 @@
 \alias{spell_check_text}
 \title{Document Spell Checking}
 \usage{
-spell_check_package(path = ".", vignettes = TRUE, ignore = character(),
-  dict = "en_US")
+spell_check_package(path = ".", vignettes = TRUE, lang = "en_US")
 
-spell_check_files(path, ignore = character(), dict = "en_US")
+spell_check_files(path, ignore = character(), lang = "en_US")
 
-spell_check_text(text, ignore = character(), dict = "en_US")
+spell_check_text(text, ignore = character(), lang = "en_US")
 }
 \arguments{
 \item{path}{path to file or package root directory containing the \code{DESCRIPTION} file}
 
 \item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder}
 
-\item{ignore}{character vector with words to ignore in \link[hunspell:hunspell]{hunspell}}
+\item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{dict}{a dictionary object or language string for \link[hunspell:hunspell]{hunspell}}
+\item{ignore}{character vector with words to ignore in \link[hunspell:hunspell]{hunspell}}
 
 \item{text}{character vector with plain text}
 }
