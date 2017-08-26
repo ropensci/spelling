@@ -10,7 +10,8 @@
 spell_check_package(pkg = ".", vignettes = TRUE, lang = "en_US",
   use_wordlist = TRUE)
 
-spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_US")
+spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_US",
+  error = FALSE)
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
@@ -20,6 +21,9 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_US")
 \item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
 
 \item{use_wordlist}{ignore words in the package \code{WORDLIST} file}
+
+\item{error}{if set to \code{TRUE}, makes \code{R CMD check} fail when an spelling error is found.
+Default behavior is to only prints a note to the console.}
 }
 \description{
 Automatically spell-check package description, documentation, and vignettes.

@@ -91,26 +91,35 @@ summarize_words <- function(file_names, found_line){
 #' @family spelling
 #' @aliases spell_check_test
 #' @rdname spell_check_package
-spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US"){
+#' @param error if set to `TRUE`, makes `R CMD check` fail when an spelling error is found.
+#' Default behavior is to only prints a note to the console.
+spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
   update_wordlist(pkg$path)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
-  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s)",
-                     deparse(vignettes), deparse(lang)), file.path(pkg$path, "tests/spelling.R"))
+  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
+    deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
+  file.copy(system.file("templates/spelling.Rout.save", package = 'spelling'), file.path(pkg$path, "tests"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
 }
 
 #' @export
-spell_check_test <- function(vignettes = TRUE, lang = "en_US"){
+spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
   pkg_dir <- list.files("../00_pkg_src", full.names = TRUE)
   if(!length(pkg_dir)){
     warning("Failed to find package source directory")
     return(invisible())
   }
   results <- spell_check_package(pkg_dir, vignettes = vignettes, lang = lang)
-  if(length(results))
-    stop(sprintf("Potential spelling errors: %s\nIf these are false positives, run spelling::update_wordlist()",
-                 paste(names(results),collapse = ", ")))
-  cat("All good.\n")
+  if(length(results)){
+    output <- sprintf("Potential spelling errors: %s\n",
+                      paste(names(results),collapse = ", "))
+    if(isTRUE(error)){
+      stop(output, call. = FALSE)
+    } else {
+      cat(output)
+    }
+  }
+  cat("All Done!\n")
 }
