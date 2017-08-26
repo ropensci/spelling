@@ -2,7 +2,7 @@
 #'
 #' Setup automatic spell checking as a unit test for `CMD check`.
 #'
-#' Use [spell_check_setup()] to add a unit test to your package that that automatically
+#' Use [spell_check_setup()] to add a unit test to your package which automatically
 #' spell checks documentation and vignettes when running `R CMD check`.
 #'
 #' @export

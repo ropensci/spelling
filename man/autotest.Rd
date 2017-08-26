@@ -19,7 +19,7 @@ spell_check_setup(path = ".", vignettes = TRUE, lang = "en_US")
 Setup automatic spell checking as a unit test for \code{CMD check}.
 }
 \details{
-Use \code{\link[=spell_check_setup]{spell_check_setup()}} to add a unit test to your package that that automatically
+Use \code{\link[=spell_check_setup]{spell_check_setup()}} to add a unit test to your package which automatically
 spell checks documentation and vignettes when running \code{R CMD check}.
 }
 \seealso{
