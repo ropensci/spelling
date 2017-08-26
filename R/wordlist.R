@@ -1,19 +1,20 @@
-#' Update WORDLIST file
+#' The WORDLIST file
 #'
 #' Read and update the wordlist included with a package. The wordlist is stored in
-#' the file `inst/WORDLIST` in the source package and is used to whitelist custom words
-#' that will be added to the dictionary when spell checking.
+#' the file `inst/WORDLIST` in the source package and is used to allow custom words
+#' which will be added to the dictionary when spell checking.
 #'
 #' @rdname wordlist
 #' @name wordlist
 #' @family spelling
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
-#' @inheritParams spell_check
-update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confirm = TRUE){
-  wordfile <- get_wordfile(path)
-  old_words <- sort(get_wordlist(path))
-  new_words <- sort(names(spell_check_package(path, vignettes = vignettes, lang = lang, use_wordlist = FALSE)))
+#' @inheritParams spell_check_package
+update_wordlist <- function(pkg = ".", vignettes = TRUE, lang = "en_US", confirm = TRUE){
+  pkg <- as_package(pkg)
+  wordfile <- get_wordfile(pkg$path)
+  old_words <- sort(get_wordlist(pkg$path))
+  new_words <- sort(names(spell_check_package(pkg$path, vignettes = vignettes, lang = lang, use_wordlist = FALSE)))
   if(isTRUE(all.equal(old_words, new_words))){
     cat(sprintf("No changes required to %s\n", wordfile))
   } else {
@@ -43,8 +44,9 @@ update_wordlist <- function(path = ".", vignettes = TRUE, lang = "en_US", confir
 
 #' @rdname wordlist
 #' @export
-get_wordlist <- function(path = "."){
-  wordfile <- get_wordfile(path)
+get_wordlist <- function(pkg = "."){
+  pkg <- as_package(pkg)
+  wordfile <- get_wordfile(pkg$path)
   out <- if(file.exists(wordfile))
     unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
   as.character(out)

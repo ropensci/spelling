@@ -4,15 +4,15 @@
 \alias{wordlist}
 \alias{update_wordlist}
 \alias{get_wordlist}
-\title{Update WORDLIST file}
+\title{The WORDLIST file}
 \usage{
-update_wordlist(path = ".", vignettes = TRUE, lang = "en_US",
+update_wordlist(pkg = ".", vignettes = TRUE, lang = "en_US",
   confirm = TRUE)
 
-get_wordlist(path = ".")
+get_wordlist(pkg = ".")
 }
 \arguments{
-\item{path}{path to file or package root directory containing the \code{DESCRIPTION} file}
+\item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
 \item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder}
 
@@ -22,10 +22,10 @@ get_wordlist(path = ".")
 }
 \description{
 Read and update the wordlist included with a package. The wordlist is stored in
-the file \code{inst/WORDLIST} in the source package and is used to whitelist custom words
-that will be added to the dictionary when spell checking.
+the file \code{inst/WORDLIST} in the source package and is used to allow custom words
+which will be added to the dictionary when spell checking.
 }
 \seealso{
-Other spelling: \code{\link{autotest}},
-  \code{\link{spell_check}}
+Other spelling: \code{\link{spell_check_files}},
+  \code{\link{spell_check_package}}
 }

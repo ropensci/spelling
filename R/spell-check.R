@@ -1,37 +1,33 @@
-#' Spell Checking
+#' Package Spell Checking
 #'
-#' Perform a spell check on manual pages, vignettes, description files and other formats.
+#' Automatically spell-check package description, documentation, and vignettes.
 #'
-#' The [spell_check_package] function checks the package manual pages, rmd/rnw vignettes,
-#' and text fields in the `DESCRIPTION` file. The [WORDLIST][get_wordlist] can be used to whitelist
-#' custom words in your package, which will be added to the dictionary when spell checking.
+#' Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields in the
+#' `DESCRIPTION` file. Use the [WORDLIST][get_wordlist] file to allow custom words in your
+#' package, which will be added to the dictionary when spell checking.
+#'
+#' Use [spell_check_setup()] to add a unit test to your package which automatically
+#' runs a spell check on documentation and vignettes during `R CMD check`.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
 #'
 #' @export
-#' @rdname spell_check
-#' @name spell_check
+#' @rdname spell_check_package
+#' @name spell_check_package
 #' @aliases spelling
 #' @family spelling
-#' @param path path to file or package root directory containing the `DESCRIPTION` file
+#' @param pkg path to package root directory containing the `DESCRIPTION` file
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
-#' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
 #' @param lang string with dictionary language string for [hunspell::dictionary][hunspell::dictionary]
-#' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist]
-spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
-  if(inherits(path, 'package')){
-    pkg <- path
-  } else {
-    description <- normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
-    pkg <- as.list(read.dcf(description)[1,])
-    names(pkg) <- tolower(names(pkg))
-    pkg$path <- dirname(description)
-  }
+#' @param use_wordlist ignore words in the package `WORDLIST` file
+spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
+  # Get package info
+  pkg <- as_package(pkg)
 
   # Add custom words to the ignore list
   add_words <- if(isTRUE(use_wordlist))
-    get_wordlist(path)
+    get_wordlist(pkg$path)
   author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
   ignore <- c(pkg$package, author, hunspell::en_stats, add_words)
 
@@ -68,6 +64,16 @@ spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US", us
   summarize_words(all_sources, all_lines)
 }
 
+as_package <- function(pkg){
+  if(inherits(pkg, 'package'))
+    return(pkg)
+  description <- normalizePath(file.path(pkg, "DESCRIPTION"), mustWork = TRUE)
+  pkg <- as.list(read.dcf(description)[1,])
+  names(pkg) <- tolower(names(pkg))
+  pkg$path <- dirname(description)
+  return(pkg)
+}
+
 # Find all occurences for each word
 summarize_words <- function(file_names, found_line){
   words_by_file <- lapply(found_line, names)
@@ -81,95 +87,30 @@ summarize_words <- function(file_names, found_line){
   structure(out, names = bad_words, class = "summary_spellcheck")
 }
 
-#' @rdname spell_check
 #' @export
-#' @examples # Example files
-#' files <- list.files(system.file("examples", package = "knitr"),
-#'   pattern = "\\.(Rnw|Rmd|html)$", full.names = TRUE)
-#' spell_check_files(files)
-spell_check_files <- function(path, ignore = character(), lang = "en_US"){
-  dict <- hunspell::dictionary(lang, add_words = ignore)
-  path <- normalizePath(path, mustWork = TRUE)
-  lines <- lapply(sort(path), spell_check_file_one, dict = dict)
-  summarize_words(path, lines)
-}
-
-spell_check_file_one <- function(path, dict){
-  if(grepl("\\.r?md$",path, ignore.case = TRUE))
-    return(spell_check_file_md(path, dict = dict))
-  if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
-    return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
-  if(grepl("\\.(tex)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "latex", dict = dict))
-  if(grepl("\\.(html?)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "html", dict = dict))
-  if(grepl("\\.(xml)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "xml", dict = dict))
-  return(spell_check_file_plain(path = path, format = "text", dict = dict))
-}
-
-#' @rdname spell_check
-#' @export
-#' @param text character vector with plain text
-spell_check_text <- function(text, ignore = character(), lang = "en_US"){
-  dict <- hunspell::dictionary(lang, add_words = ignore)
-  bad_words <- hunspell::hunspell(text, dict = dict)
-  sapply(sort(unique(unlist(bad_words))), function(word) {
-    which(vapply(bad_words, `%in%`, x = word, logical(1)))
-  }, simplify = FALSE)
-}
-
-spell_check_plain <- function(text, dict){
-  bad_words <- hunspell::hunspell(text, dict = dict)
-  vapply(sort(unique(unlist(bad_words))), function(word) {
-    line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
-    paste(line_numbers, collapse = ",")
-  }, character(1))
+#' @family spelling
+#' @aliases spell_check_test
+#' @rdname spell_check_package
+spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US"){
+  # Get package info
+  pkg <- as_package(pkg)
+  update_wordlist(pkg$path)
+  dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
+  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s)",
+                     deparse(vignettes), deparse(lang)), file.path(pkg$path, "tests/spelling.R"))
+  cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
 }
 
 #' @export
-print.summary_spellcheck <- function(x, ...){
-  words <- names(x)
-  fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
-  pretty_names <- sprintf(fmt, words)
-  cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
-  for(i in seq_along(x)){
-    cat(pretty_names[i])
-    cat(paste(x[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
-    cat("\n")
+spell_check_test <- function(vignettes = TRUE, lang = "en_US"){
+  pkg_dir <- list.files("../00_pkg_src", full.names = TRUE)
+  if(!length(pkg_dir)){
+    warning("Failed to find package source directory")
+    return(invisible())
   }
-  invisible(x)
-}
-
-spell_check_file_text <- function(file, dict){
-  spell_check_plain(readLines(file), dict = dict)
-}
-
-spell_check_file_rd <- function(rdfile, dict){
-  text <- tools::RdTextFilter(rdfile)
-  spell_check_plain(text, dict = dict)
-}
-
-spell_check_file_md <- function(path, dict){
-  words <- parse_text_md(path)
-  words$startline <- vapply(strsplit(words$position, ":", fixed = TRUE), `[[`, character(1), 1)
-  bad_words <- hunspell::hunspell(words$text, dict = dict)
-  vapply(sort(unique(unlist(bad_words))), function(word) {
-    line_numbers <- which(vapply(bad_words, `%in%`, x = word, logical(1)))
-    paste(words$startline[line_numbers], collapse = ",")
-  }, character(1))
-}
-
-spell_check_file_knitr <- function(path, format, dict){
-  latex <- remove_chunks(path)
-  words <- hunspell::hunspell_parse(latex, format = format, dict = dict)
-  text <- vapply(words, paste, character(1), collapse = " ")
-  spell_check_plain(text, dict = dict)
-}
-
-spell_check_file_plain <- function(path, format, dict){
-  lines <- readLines(path, warn = FALSE)
-  words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
-  text <- vapply(words, paste, character(1), collapse = " ")
-  spell_check_plain(text, dict = dict)
+  results <- spell_check_package(pkg_dir, vignettes = vignettes, lang = lang)
+  if(length(results))
+    stop(sprintf("Potential spelling errors: %s\nIf these are false positives, run spelling::update_wordlist()",
+                 paste(names(results),collapse = ", ")))
+  cat("All good.\n")
 }
