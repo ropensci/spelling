@@ -8,8 +8,9 @@
 
 > Tools for Spell Checking in R
 
-Automated spell checking for common document formats including latex,
-markdown, manual pages, and description files
+Spell checking common document formats including latex, markdown, manual 
+pages, and description files. Includes utilities to spell automate spell checking
+R package documentation and vignettes as a unit test during CMD check.
 
 ## Installation
 
