@@ -3,7 +3,7 @@
 #' Perform a spell check on manual pages, vignettes, description files and other formats.
 #'
 #' The [spell_check_package] function checks the package manual pages, rmd/rnw vignettes,
-#' and text fields in the `DESCRIPTION` file. The file `tools/wordlist.txt` can be used to whitelist
+#' and text fields in the `DESCRIPTION` file. The [wordlist] can be used to whitelist
 #' custom words in your package, which will be added to the dictionary before checking.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
@@ -11,11 +11,13 @@
 #'
 #' @export
 #' @rdname spell_check
+#' @name spell_check
 #' @param path path to file or package root directory containing the `DESCRIPTION` file
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
 #' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
 #' @param lang string with dictionary language string for [hunspell::dictionary][hunspell::dictionary]
-spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US"){
+#' @param use_wordlist ignore words in the package [wordlist][get_wordlist]
+spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
   if(inherits(path, 'package')){
     pkg <- path
   } else {
@@ -26,11 +28,10 @@ spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US"){
   }
 
   # Add custom words to the ignore list
-  wordfile <- normalizePath(file.path(path, "tools/wordlist.txt"), mustWork = FALSE)
-  wordlist <- if(file.exists(wordfile))
-    unlist(strsplit(readLines(wordfile, warn = FALSE), " ", fixed = TRUE))
+  add_words <- if(isTRUE(use_wordlist))
+    get_wordlist(path)
   author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
-  ignore <- c(pkg$package, author, hunspell::en_stats, wordlist)
+  ignore <- c(pkg$package, author, hunspell::en_stats, add_words)
 
   # Create the hunspell dictionary object
   dict <- hunspell::dictionary(lang, add_words = ignore)
