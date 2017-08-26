@@ -6,6 +6,7 @@
 #'
 #' @rdname wordlist
 #' @name wordlist
+#' @family spelling
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
 #' @inheritParams spell_check

@@ -25,3 +25,6 @@ Read and update the wordlist included with a package. The wordlist is stored in
 the file \code{inst/WORDLIST} in the source package and is used to whitelist custom words
 that will be added to the dictionary when spell checking.
 }
+\seealso{
+Other spelling: \code{\link{spell_check}}
+}

@@ -3,6 +3,7 @@
 \name{spell_check}
 \alias{spell_check}
 \alias{spell_check_package}
+\alias{spelling}
 \alias{spell_check_files}
 \alias{spell_check_text}
 \title{Spell Checking}
@@ -43,4 +44,7 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 files <- list.files(system.file("examples", package = "knitr"),
   pattern = "\\\\.(Rnw|Rmd|html)$", full.names = TRUE)
 spell_check_files(files)
+}
+\seealso{
+Other spelling: \code{\link{wordlist}}
 }

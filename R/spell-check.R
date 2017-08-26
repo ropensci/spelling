@@ -12,6 +12,8 @@
 #' @export
 #' @rdname spell_check
 #' @name spell_check
+#' @aliases spelling
+#' @family spelling
 #' @param path path to file or package root directory containing the `DESCRIPTION` file
 #' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
 #' @param ignore character vector with words to ignore in [hunspell][hunspell::hunspell]
