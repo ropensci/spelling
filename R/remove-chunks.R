@@ -18,10 +18,12 @@ remove_chunks <- function(path) {
   }
 
   # Find first ending after a start
-  lapply(starts, function(x){
-    end <- min(ends[ends > x])
-    lines[x:end] <<- ""
+  seqs <- lapply(starts, function(start){
+    end <- sort(ends[ends > start])[1]
+    if(!is.na(end))
+      seq(start, end)
   })
+  lines[unlist(seqs)] = ""
   return(lines)
 }
 
