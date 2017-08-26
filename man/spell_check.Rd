@@ -46,6 +46,6 @@ files <- list.files(system.file("examples", package = "knitr"),
 spell_check_files(files)
 }
 \seealso{
-Other spelling: \code{\link{spell_test_run}},
+Other spelling: \code{\link{spell_check_test}},
   \code{\link{wordlist}}
 }

@@ -1,1 +1,1 @@
-spelling::spell_test_run(vignettes = TRUE, lang = "en_US")
+spelling::spell_check_test(vignettes = TRUE, lang = "en_US")
