@@ -1,7 +1,10 @@
-#' Document Spell Checking
+#' Spell Checking
 #'
-#' Runs a spell check on text fields in the package description file, manual pages, vignettes
-#' or other formats.
+#' Perform a spell check on manual pages, vignettes, description files and other formats.
+#'
+#' The `spell_check_package()` checks the package manual pages, rmd/rnw vignettes, and text
+#' fields in the DESCRIPTION file. The file `tools/wordlist.txt` can be used to whitelist
+#' custom words in your package, which will be added to the dictionary before checking.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
@@ -23,10 +26,11 @@ spell_check_package <- function(path = ".", vignettes = TRUE, lang = "en_US"){
   }
 
   # Add custom words to the ignore list
-  wordfile <- normalizePath(file.path(path, "tools/wordlist"), mustWork = FALSE)
+  wordfile <- normalizePath(file.path(path, "tools/wordlist.txt"), mustWork = FALSE)
   wordlist <- if(file.exists(wordfile))
-    readLines(wordfile, warn = FALSE)
-  ignore <- c(pkg$package, hunspell::en_stats, wordlist)
+    unlist(strsplit(readLines(wordfile, warn = FALSE), " ", fixed = TRUE))
+  author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
+  ignore <- c(pkg$package, author, hunspell::en_stats, wordlist)
 
   # Create the hunspell dictionary object
   dict <- hunspell::dictionary(lang, add_words = ignore)

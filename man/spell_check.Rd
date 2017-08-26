@@ -4,7 +4,7 @@
 \alias{spell_check_package}
 \alias{spell_check_files}
 \alias{spell_check_text}
-\title{Document Spell Checking}
+\title{Spell Checking}
 \usage{
 spell_check_package(path = ".", vignettes = TRUE, lang = "en_US")
 
@@ -24,10 +24,13 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 \item{text}{character vector with plain text}
 }
 \description{
-Runs a spell check on text fields in the package description file, manual pages, vignettes
-or other formats.
+Perform a spell check on manual pages, vignettes, description files and other formats.
 }
 \details{
+The \code{spell_check_package()} checks the package manual pages, rmd/rnw vignettes, and text
+fields in the DESCRIPTION file. The file \code{tools/wordlist.txt} can be used to define a
+list of allowed words for your package.
+
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }
