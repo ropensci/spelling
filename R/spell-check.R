@@ -112,7 +112,7 @@ print.spellcheck <- function(x, ...){
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
   for(i in seq_along(x)){
     cat(pretty_names[i])
-    cat(paste(x[[i]], collapse = ", "))
+    cat(paste(x[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
     cat("\n")
   }
   invisible(x)
