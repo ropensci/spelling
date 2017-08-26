@@ -2,14 +2,14 @@
 % Please edit documentation in R/spell-check.R
 \name{spell_check_package}
 \alias{spell_check_package}
-\alias{spell_check_file}
+\alias{spell_check_files}
 \alias{spell_check_text}
-\title{Spell Check Package}
+\title{Document Spell Checking}
 \usage{
 spell_check_package(path = ".", vignettes = TRUE, ignore = character(),
   dict = "en_US")
 
-spell_check_file(path, ignore = character(), dict = "en_US")
+spell_check_files(path, ignore = character(), dict = "en_US")
 
 spell_check_text(text, ignore = character(), dict = "en_US")
 }
@@ -25,7 +25,8 @@ spell_check_text(text, ignore = character(), dict = "en_US")
 \item{text}{character vector with plain text}
 }
 \description{
-Runs a spell check on text fields in the package description file, manual pages, and vignettes.
+Runs a spell check on text fields in the package description file, manual pages, vignettes
+or other formats.
 }
 \details{
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
@@ -33,6 +34,7 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 }
 \examples{
 # Example files
-spell_check_file(system.file("examples/knitr-manual.Rnw", package = "knitr"))
-spell_check_file(system.file("misc/tikz2pdf.tex", package = "knitr"))
+files <- list.files(system.file("examples", package = "knitr"),
+  pattern = "\\\\.(Rnw|Rmd|html)$", full.names = TRUE)
+spell_check_files(files)
 }

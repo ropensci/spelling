@@ -1,6 +1,7 @@
-#' Spell Check Package
+#' Document Spell Checking
 #'
-#' Runs a spell check on text fields in the package description file, manual pages, and vignettes.
+#' Runs a spell check on text fields in the package description file, manual pages, vignettes
+#' or other formats.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
@@ -50,15 +51,17 @@ spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character
     all_sources <- c(all_sources, md_files, rnw_files)
     all_lines <- c(all_lines, md_lines, rnw_lines)
   }
+  summarize_words(all_sources, all_lines)
+}
 
-  words_by_file <- lapply(all_lines, names)
+# Find all occurences for each word
+summarize_words <- function(file_names, found_line){
+  words_by_file <- lapply(found_line, names)
   bad_words <- sort(unique(unlist(words_by_file)))
-
-  # Find all occurences for each word
   out <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
-      paste0(basename(all_sources[i]), ":", all_lines[[i]][word])
+      paste0(basename(file_names[i]), ":", found_line[[i]][word])
     }, character(1))
   })
   structure(out, names = bad_words, class = "spellcheck")
@@ -67,9 +70,16 @@ spell_check_package <- function(path = ".", vignettes = TRUE, ignore = character
 #' @rdname spell_check
 #' @export
 #' @examples # Example files
-#' spell_check_file(system.file("examples/knitr-manual.Rnw", package = "knitr"))
-#' spell_check_file(system.file("misc/tikz2pdf.tex", package = "knitr"))
-spell_check_file <- function(path, ignore = character(), dict = "en_US"){
+#' files <- list.files(system.file("examples", package = "knitr"),
+#'   pattern = "\\.(Rnw|Rmd|html)$", full.names = TRUE)
+#' spell_check_files(files)
+spell_check_files <- function(path, ignore = character(), dict = "en_US"){
+  path <- normalizePath(path, mustWork = TRUE)
+  lines <- lapply(sort(path), spell_check_file_one, ignore = ignore, dict = dict)
+  summarize_words(path, lines)
+}
+
+spell_check_file_one <- function(path, ignore = character(), dict = "en_US"){
   if(grepl("\\.r?md$",path, ignore.case = TRUE))
     return(spell_check_file_md(path, ignore = ignore, dict = dict))
   if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
