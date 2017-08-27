@@ -13,6 +13,7 @@
 #'   pattern = "\\.(Rnw|Rmd|html)$", full.names = TRUE)
 #' spell_check_files(files)
 spell_check_files <- function(path, ignore = character(), lang = "en_GB"){
+  stopifnot(is.character(ignore))
   dict <- hunspell::dictionary(lang, add_words = ignore)
   path <- normalizePath(path, mustWork = TRUE)
   lines <- lapply(sort(path), spell_check_file_one, dict = dict)
@@ -37,6 +38,7 @@ spell_check_file_one <- function(path, dict){
 #' @export
 #' @param text character vector with plain text
 spell_check_text <- function(text, ignore = character(), lang = "en_GB"){
+  stopifnot(is.character(ignore))
   dict <- hunspell::dictionary(lang, add_words = ignore)
   bad_words <- hunspell::hunspell(text, dict = dict)
   words <- sort(unique(unlist(bad_words)))
