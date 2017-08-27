@@ -132,7 +132,18 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
   code <- paste(">", readLines("spelling.R"), collapse = "\n")
   out_save <- sub("@INPUT@", code, out_save, fixed = TRUE)
   writeLines(out_save, "spelling.Rout.save")
+
+  # Try to find pkg source directory
   pkg_dir <- list.files("../00_pkg_src", full.names = TRUE)
+  if(!length(pkg_dir)){
+    # This is where it is on e.g. win builder
+    check_dir <- dirname(getwd())
+    if(grepl("\\.Rcheck$", check_dir)){
+      source_dir <- sub("\\.Rcheck$", "", check_dir)
+      if(file.exists(source_dir))
+        pkg_dir <- source_dir
+    }
+  }
   if(!length(pkg_dir)){
     warning("Failed to find package source directory")
     return(invisible())
