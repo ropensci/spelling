@@ -101,7 +101,6 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error
   writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
     deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
-  cat("Success! Make sure to save both files: 'inst/WORDLIST' and 'tests/spelling.R'\n")
   try(add_to_description(file.path(pkg$path, "DESCRIPTION")))
 }
 

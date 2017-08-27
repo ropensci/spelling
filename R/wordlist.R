@@ -21,11 +21,11 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, lang = "en_US", confirm
     words_added <- new_words[is.na(match(new_words, old_words))]
     words_removed <- old_words[is.na(match(old_words, new_words))]
     if(length(words_added)){
-      cat(sprintf("The following words were added to the wordlist:\n%s\n",
+      cat(sprintf("The following words will be added to the wordlist:\n%s\n",
           paste(" -", words_added, collapse = "\n")))
     }
     if(length(words_removed)){
-      cat(sprintf("The following words were removed from the wordlist:\n%s\n",
+      cat(sprintf("The following words will be removed from the wordlist:\n%s\n",
           paste(" -", words_removed, collapse = "\n")))
     }
     if(isTRUE(confirm) && length(words_added)){
