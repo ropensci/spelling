@@ -138,13 +138,13 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
     return(invisible())
   }
   results <- spell_check_package(pkg_dir, vignettes = vignettes, lang = lang)
-  if(length(results)){
-    output <- sprintf("Potential spelling errors: %s\n",
-                      paste(names(results),collapse = ", "))
+  if(nrow(results)){
     if(isTRUE(error)){
+      output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
       stop(output, call. = FALSE)
     } else {
-      cat(output)
+      cat("Potential spelling errors:\n")
+      print(results)
     }
   }
   cat("All Done!\n")
