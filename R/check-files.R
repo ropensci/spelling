@@ -39,9 +39,12 @@ spell_check_file_one <- function(path, dict){
 spell_check_text <- function(text, ignore = character(), lang = "en_US"){
   dict <- hunspell::dictionary(lang, add_words = ignore)
   bad_words <- hunspell::hunspell(text, dict = dict)
-  sapply(sort(unique(unlist(bad_words))), function(word) {
+  words <- sort(unique(unlist(bad_words)))
+  out <- data.frame(word = words, stringsAsFactors = FALSE)
+  out$found <- lapply(words, function(word) {
     which(vapply(bad_words, `%in%`, x = word, logical(1)))
-  }, simplify = FALSE)
+  })
+  out
 }
 
 spell_check_plain <- function(text, dict){
