@@ -164,10 +164,12 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
 
 add_to_description <- function(desc){
   lines <- readLines(desc, warn = FALSE)
-  out <- if(!any(grepl("^Suggests", lines))){
-    c(lines, "Suggests:\n    spelling")
-  } else {
-    sub("^Suggests:", "Suggests:\n    spelling,", lines)
+  if(!any(grepl("spelling", lines))){
+    out <- if(!any(grepl("^Suggests", lines))){
+      c(lines, "Suggests:\n    spelling")
+    } else {
+      sub("^Suggests:", "Suggests:\n    spelling,", lines)
+    }
+    writeLines(out, desc)
   }
-  writeLines(out, desc)
 }
