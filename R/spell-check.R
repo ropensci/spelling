@@ -6,9 +6,9 @@
 #' `DESCRIPTION` file. Use the [WORDLIST][get_wordlist] file to allow custom words in your
 #' package, which will be added to the dictionary when spell checking.
 #'
-#' Use [spell_check_setup()] to add a unit test to your package which automatically
+#' The [spell_check_setup] function adds a unit test to your package which automatically
 #' runs a spell check on documentation and vignettes during `R CMD check`. By default this
-#' unit test will never fail; it merely prints potential spelling errors to the console.
+#' unit test never fails; it merely prints potential spelling errors to the console.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
@@ -19,9 +19,10 @@
 #' @aliases spelling
 #' @family spelling
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
-#' @param vignettes spell check `rmd` and `rnw` files in the `vignettes` folder
-#' @param lang string with dictionary language string for [hunspell::dictionary][hunspell::dictionary]
-#' @param use_wordlist ignore words in the package `WORDLIST` file
+#' @param vignettes also check all `rmd` and `rnw` files in the pkg `vignettes` folder
+#' @param lang dictionary string for [hunspell][hunspell::dictionary],
+#' usually either `"en_US"` or `"en_GB"`.
+#' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)
@@ -113,12 +114,12 @@ print.summary_spellcheck <- function(x, ...){
 #' @export
 #' @aliases spell_check_test
 #' @rdname spell_check_package
-#' @param error if set to `TRUE`, makes `R CMD check` fail when an spelling error is found.
-#' Default behavior is to only prints a note to the console.
+#' @param error make `R CMD check` fail when spelling errors are found.
+#' Default behavior only prints spelling errors to the console at the end of `CMD check`.
 spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
-  update_wordlist(pkg$path)
+  update_wordlist(pkg$path, vignettes = vignettes, lang = lang)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
   writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
     deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))

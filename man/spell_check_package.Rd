@@ -16,14 +16,15 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_US",
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder}
+\item{vignettes}{also check all \code{rmd} and \code{rnw} files in the pkg \code{vignettes} folder}
 
-\item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
+\item{lang}{dictionary string for \link[hunspell:dictionary]{hunspell},
+usually either \code{"en_US"} or \code{"en_GB"}.}
 
-\item{use_wordlist}{ignore words in the package \code{WORDLIST} file}
+\item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
-\item{error}{if set to \code{TRUE}, makes \code{R CMD check} fail when an spelling error is found.
-Default behavior is to only prints a note to the console.}
+\item{error}{make \code{R CMD check} fail when spelling errors are found.
+Default behavior only prints spelling errors to the console at the end of \code{CMD check}.}
 }
 \description{
 Automatically spell-check package description, documentation, and vignettes.
@@ -33,9 +34,9 @@ Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields
 \code{DESCRIPTION} file. Use the \link[=get_wordlist]{WORDLIST} file to allow custom words in your
 package, which will be added to the dictionary when spell checking.
 
-Use \code{\link[=spell_check_setup]{spell_check_setup()}} to add a unit test to your package which automatically
+The \link{spell_check_setup} function adds a unit test to your package which automatically
 runs a spell check on documentation and vignettes during \code{R CMD check}. By default this
-unit test will never fail; it merely prints potential spelling errors to the console.
+unit test never fails; it merely prints potential spelling errors to the console.
 
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.

@@ -14,16 +14,24 @@ get_wordlist(pkg = ".")
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{spell check \code{rmd} and \code{rnw} files in the \code{vignettes} folder}
+\item{vignettes}{also check all \code{rmd} and \code{rnw} files in the pkg \code{vignettes} folder}
 
-\item{lang}{string with dictionary language string for \link[hunspell:dictionary]{hunspell::dictionary}}
+\item{lang}{dictionary string for \link[hunspell:dictionary]{hunspell},
+usually either \code{"en_US"} or \code{"en_GB"}.}
 
 \item{confirm}{show changes and ask confirmation before adding new words to the list}
 }
 \description{
-Read and update the wordlist included with a package. The wordlist is stored in
-the file \code{inst/WORDLIST} in the source package and is used to allow custom words
-which will be added to the dictionary when spell checking.
+The package wordlist file is used to allow custom words which will be added to the
+dictionary when spell checking. It is stored in \code{inst/WORDLIST} in the source package
+and must contain one word per line in UTF-8 encoded text.
+}
+\details{
+The \link{update_wordlist} function runs a full spell check on a package, shows the results,
+and then prompts to add the found words to the package wordlist. Obviously you should
+check closely that these legitimate words and not actual spelling errors. It also
+removes words from the wordlist that no longer appear as spelling errors, either because
+they have been removed from the documentation or added to the \code{lang} dictionary.
 }
 \seealso{
 Other spelling: \code{\link{spell_check_files}},

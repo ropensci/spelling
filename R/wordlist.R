@@ -1,8 +1,14 @@
 #' The WORDLIST file
 #'
-#' Read and update the wordlist included with a package. The wordlist is stored in
-#' the file `inst/WORDLIST` in the source package and is used to allow custom words
-#' which will be added to the dictionary when spell checking.
+#' The package wordlist file is used to allow custom words which will be added to the
+#' dictionary when spell checking. It is stored in `inst/WORDLIST` in the source package
+#' and must contain one word per line in UTF-8 encoded text.
+#'
+#' The [update_wordlist] function runs a full spell check on a package, shows the results,
+#' and then prompts to add the found words to the package wordlist. Obviously you should
+#' check closely that these legitimate words and not actual spelling errors. It also
+#' removes words from the wordlist that no longer appear as spelling errors, either because
+#' they have been removed from the documentation or added to the `lang` dictionary.
 #'
 #' @rdname wordlist
 #' @name wordlist
