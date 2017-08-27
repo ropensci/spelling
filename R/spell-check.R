@@ -107,7 +107,10 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error
 
 #' @export
 spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
-  file.copy(system.file("templates/spelling.Rout.save", package = 'spelling'), "spelling.Rout.save")
+  out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
+  code <- readLines("spelling.R")
+  out_save <- sub("@INPUT@", code, out_save, fixed = TRUE)
+  writeLines(out_save, "spelling.Rout.save")
   pkg_dir <- list.files("../00_pkg_src", full.names = TRUE)
   if(!length(pkg_dir)){
     warning("Failed to find package source directory")
