@@ -5,8 +5,9 @@ Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
     person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
 Description: Spell checking common document formats including latex, markdown, manual 
-    pages, and description files. Includes utilities to spell automate spell checking
-    package documentation and vignettes as a unit test during CMD check.
+    pages, and description files. Includes utilities to automate spell checking of
+    package documentation and vignettes as a unit test during 'R CMD check'. Packages
+    may define a wordlist to allow custom terminology without having to abuse punctuation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
