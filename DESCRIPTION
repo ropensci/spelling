@@ -7,7 +7,6 @@ Authors@R: c(
 Description: Spell checking common document formats including latex, markdown, manual 
     pages, and description files. Includes utilities to spell automate spell checking
     package documentation and vignettes as a unit test during CMD check.
-Depends: R (>= 3.4.1)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
