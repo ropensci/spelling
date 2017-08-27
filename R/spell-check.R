@@ -31,10 +31,10 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", use
   add_words <- if(isTRUE(use_wordlist))
     get_wordlist(pkg$path)
   author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
-  ignore <- c(pkg$package, author, hunspell::en_stats, add_words)
+  ignore <- unique(c(pkg$package, author, hunspell::en_stats, add_words))
 
   # Create the hunspell dictionary object
-  dict <- hunspell::dictionary(lang, add_words = ignore)
+  dict <- hunspell::dictionary(lang, add_words = sort(ignore))
 
   # Check Rd manual files
   rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
