@@ -16,7 +16,7 @@
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
 #' @inheritParams spell_check_package
-update_wordlist <- function(pkg = ".", vignettes = TRUE, lang = "en_US", confirm = TRUE){
+update_wordlist <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", confirm = TRUE){
   pkg <- as_package(pkg)
   wordfile <- get_wordfile(pkg$path)
   old_words <- sort(get_wordlist(pkg$path))

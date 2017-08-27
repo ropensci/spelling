@@ -7,10 +7,10 @@
 \alias{spell_check_test}
 \title{Package Spell Checking}
 \usage{
-spell_check_package(pkg = ".", vignettes = TRUE, lang = "en_US",
+spell_check_package(pkg = ".", vignettes = TRUE, lang = "en_GB",
   use_wordlist = TRUE)
 
-spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_US",
+spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en_GB",
   error = FALSE)
 }
 \arguments{

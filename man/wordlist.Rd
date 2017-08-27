@@ -6,7 +6,7 @@
 \alias{get_wordlist}
 \title{The WORDLIST file}
 \usage{
-update_wordlist(pkg = ".", vignettes = TRUE, lang = "en_US",
+update_wordlist(pkg = ".", vignettes = TRUE, lang = "en_GB",
   confirm = TRUE)
 
 get_wordlist(pkg = ".")

@@ -5,9 +5,9 @@
 \alias{spell_check_text}
 \title{Spell Check}
 \usage{
-spell_check_files(path, ignore = character(), lang = "en_US")
+spell_check_files(path, ignore = character(), lang = "en_GB")
 
-spell_check_text(text, ignore = character(), lang = "en_US")
+spell_check_text(text, ignore = character(), lang = "en_GB")
 }
 \arguments{
 \item{path}{path to file or to spell check}

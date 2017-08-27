@@ -23,7 +23,7 @@
 #' @param lang dictionary string for [hunspell][hunspell::dictionary],
 #' usually either `"en_US"` or `"en_GB"`.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
-spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_US", use_wordlist = TRUE){
+spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)
 
@@ -116,7 +116,7 @@ print.summary_spellcheck <- function(x, ...){
 #' @rdname spell_check_package
 #' @param error make `R CMD check` fail when spelling errors are found.
 #' Default behavior only prints spelling errors to the console at the end of `CMD check`.
-spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error = FALSE){
+spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
   update_wordlist(pkg$path, vignettes = vignettes, lang = lang)
@@ -128,7 +128,7 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_US", error
 }
 
 #' @export
-spell_check_test <- function(vignettes = TRUE, lang = "en_US", error = FALSE){
+spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
   out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
   code <- paste(">", readLines("spelling.R"), collapse = "\n")
   out_save <- sub("@INPUT@", code, out_save, fixed = TRUE)
