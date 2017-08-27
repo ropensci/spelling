@@ -7,7 +7,8 @@
 #' package, which will be added to the dictionary when spell checking.
 #'
 #' Use [spell_check_setup()] to add a unit test to your package which automatically
-#' runs a spell check on documentation and vignettes during `R CMD check`.
+#' runs a spell check on documentation and vignettes during `R CMD check`. By default this
+#' unit test will never fail; it merely prints potential spelling errors to the console.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
@@ -88,7 +89,6 @@ summarize_words <- function(file_names, found_line){
 }
 
 #' @export
-#' @family spelling
 #' @aliases spell_check_test
 #' @rdname spell_check_package
 #' @param error if set to `TRUE`, makes `R CMD check` fail when an spelling error is found.

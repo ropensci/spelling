@@ -34,15 +34,13 @@ Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields
 package, which will be added to the dictionary when spell checking.
 
 Use \code{\link[=spell_check_setup]{spell_check_setup()}} to add a unit test to your package which automatically
-runs a spell check on documentation and vignettes during \code{R CMD check}.
+runs a spell check on documentation and vignettes during \code{R CMD check}. By default this
+unit test will never fail; it merely prints potential spelling errors to the console.
 
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }
 \seealso{
-Other spelling: \code{\link{spell_check_files}},
-  \code{\link{wordlist}}
-
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{wordlist}}
 }
