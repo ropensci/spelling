@@ -1,7 +1,5 @@
 CMD
 hunspell
-Parsers
+pkg
 rmd
 rnw
-wordlist
-WORDLIST

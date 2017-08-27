@@ -115,7 +115,7 @@ print.summary_spellcheck <- function(x, ...){
 #' @aliases spell_check_test
 #' @rdname spell_check_package
 #' @param error make `R CMD check` fail when spelling errors are found.
-#' Default behavior only prints spelling errors to the console at the end of `CMD check`.
+#' Default behaviour only prints spelling errors to the console at the end of `CMD check`.
 spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)

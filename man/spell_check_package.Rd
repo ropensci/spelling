@@ -24,7 +24,7 @@ usually either \code{"en_US"} or \code{"en_GB"}.}
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
 \item{error}{make \code{R CMD check} fail when spelling errors are found.
-Default behavior only prints spelling errors to the console at the end of \code{CMD check}.}
+Default behaviour only prints spelling errors to the console at the end of \code{CMD check}.}
 }
 \description{
 Automatically spell-check package description, documentation, and vignettes.
