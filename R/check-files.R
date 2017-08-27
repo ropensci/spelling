@@ -52,24 +52,6 @@ spell_check_plain <- function(text, dict){
   }, character(1))
 }
 
-#' @export
-print.summary_spellcheck <- function(x, ...){
-  if(!length(x)){
-    cat("No spelling errors found.\n")
-    return(invisible())
-  }
-  words <- names(x)
-  fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
-  pretty_names <- sprintf(fmt, words)
-  cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
-  for(i in seq_along(x)){
-    cat(pretty_names[i])
-    cat(paste(x[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
-    cat("\n")
-  }
-  invisible(x)
-}
-
 spell_check_file_text <- function(file, dict){
   spell_check_plain(readLines(file), dict = dict)
 }
