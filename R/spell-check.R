@@ -124,7 +124,7 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", error
   writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
     deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
-  try(add_to_description(file.path(pkg$path, "DESCRIPTION")))
+  try(add_to_description(pkg))
 }
 
 #' @export
@@ -162,9 +162,10 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
   cat("All Done!\n")
 }
 
-add_to_description <- function(desc){
-  lines <- readLines(desc, warn = FALSE)
-  if(!any(grepl("spelling", lines))){
+add_to_description <- function(pkg){
+  if(!grepl("spelling", pkg$suggests)){
+    desc <- normalizePath(file.path(pkg$path, "DESCRIPTION"), mustWork = TRUE)
+    lines <- readLines(desc, warn = FALSE)
     out <- if(!any(grepl("^Suggests", lines))){
       c(lines, "Suggests:\n    spelling")
     } else {
