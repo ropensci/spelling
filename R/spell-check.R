@@ -70,7 +70,7 @@ as_package <- function(pkg){
   if(inherits(pkg, 'package'))
     return(pkg)
   path <- pkg
-  description <- if(!file.exists(file.path(path, "DESCRIPTION")) && file.exists(file.path(path, "DESCRIPTION.in"))){
+  description <- if(file.exists(file.path(path, "DESCRIPTION.in"))){
     file.path(path, "DESCRIPTION.in")
   } else {
     normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
