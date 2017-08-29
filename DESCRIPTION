@@ -1,6 +1,6 @@
 Package: spelling
 Title: Tools for Spell Checking in R
-Version: 1.0
+Version: 1.0.9000
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
     person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
@@ -12,6 +12,8 @@ Description: Spell checking common document formats including latex, markdown, m
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/ropensci/spelling#readme
+BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
   xml2, 
