@@ -89,3 +89,54 @@ spell_check_file_plain <- function(path, format, dict){
   text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_plain(text, dict = dict)
 }
+
+#' @useDynLib spelling, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
+spell_check_file_roxygen <- function(path, dict, global_options = list()) {
+
+  parsed <- roxygen2::parse_file(file = path, global_options = global_options)
+
+  lines <- readLines(path)
+  is_roxygen <- grep("^[[:space:]]*#+'", lines)
+  roxygen_lines <- lines[is_roxygen]
+
+  # Some roxygen tags (such as param) have a name and a description, we only
+  # want to spell check the latter.
+  extract_text <- function(x) {
+    if (is.list(x) && exists("description", x)) {
+      return(x[["description"]])
+    }
+    x
+  }
+
+  # roxygen tags that contain text
+  text_tags <- c("concept", "describeIn", "description", "details", "field", "note", "param", "return", "section", "slot", "title")
+  parse_block <- function(tags) {
+    text <- unlist(lapply(tags[names(tags) %in% text_tags], extract_text))
+    if (length(text) == 0) {
+      return(data.frame(word = character(), line = integer(), start = integer(), stringsAsFactors = FALSE))
+    }
+
+    # blank out rd tags, tag list derived from RdTextFilter
+    # https://github.com/wch/r-source/blob/89ec1150299f7be62b839d5d5eb46bd9a63653bd/src/library/tools/R/Rdtools.R#L113-L126
+    rd_tags <- c("S3method", "S4method", "command", "code", "docType", "email", "encoding", "file", "keyword", "link", "linkS4class", "method", "pkg", "var")
+    re <- paste0("\\\\(", paste0(collapse = "|", rd_tags), ")[^}]+}")
+    text <- blank_matches(text, re)
+    bad_words <- hunspell::hunspell(text, dict = dict)
+    res <- find_word_positions(roxygen_lines, unique(sort(unlist(bad_words))))
+
+    # Fix line numbers for real file.
+    res$line <- is_roxygen[res$line]
+
+    vapply(split(res$line, res$word), paste, character(1), collapse = ", ")
+  }
+
+  unlist(lapply(parsed, parse_block))
+}
+
+blank_matches <- function(str, re) {
+  m <- gregexpr(re, str)
+  blanks <- function(n) strrep(" ", n)
+  regmatches(str, m) <- Map(blanks, lapply(regmatches(str, m), nchar))
+  str
+}

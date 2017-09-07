@@ -45,3 +45,4 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{wordlist}}
 }
+\concept{spelling}

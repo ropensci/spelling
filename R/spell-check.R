@@ -40,6 +40,10 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", use
   rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
   rd_lines <- lapply(sort(rd_files), spell_check_file_rd, dict = dict)
 
+  # Check Roxygen comments
+  r_files <- list.files(file.path(pkg$path, "R"), "\\.R$", ignore.case = TRUE, full.names = TRUE)
+  r_lines <- lapply(sort(r_files), spell_check_file_roxygen, dict = dict, global_options = roxygen2::load_options(pkg$path))
+
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
@@ -47,8 +51,8 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", use
   })
 
   # Combine
-  all_sources <- c(rd_files, pkg_fields)
-  all_lines <- c(rd_lines, pkg_lines)
+  all_sources <- c(r_files, rd_files, pkg_fields)
+  all_lines <- c(r_lines, rd_lines, pkg_lines)
 
   if(isTRUE(vignettes)){
     # Markdown vignettes
