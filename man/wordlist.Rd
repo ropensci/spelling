@@ -37,3 +37,4 @@ they have been removed from the documentation or added to the \code{lang} dictio
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{spell_check_package}}
 }
+\concept{spelling}
