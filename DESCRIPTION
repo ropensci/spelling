@@ -17,7 +17,7 @@ BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
   xml2, 
-  hunspell,
+  hunspell (>= 2.7),
   knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
