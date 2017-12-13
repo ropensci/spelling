@@ -31,6 +31,8 @@ spell_check_file_one <- function(path, dict){
     return(spell_check_file_plain(path = path, format = "html", dict = dict))
   if(grepl("\\.(xml)$",path, ignore.case = TRUE))
     return(spell_check_file_plain(path = path, format = "xml", dict = dict))
+  if(grepl("\\.(pdf)$",path, ignore.case = TRUE))
+    return(spell_check_file_pdf(path = path, format = "text", dict = dict))
   return(spell_check_file_plain(path = path, format = "text", dict = dict))
 }
 
@@ -85,6 +87,13 @@ spell_check_file_knitr <- function(path, format, dict){
 
 spell_check_file_plain <- function(path, format, dict){
   lines <- readLines(path, warn = FALSE)
+  words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
+  text <- vapply(words, paste, character(1), collapse = " ")
+  spell_check_plain(text, dict = dict)
+}
+
+spell_check_file_pdf <- function(path, format, dict){
+  lines <- pdftools::pdf_text(path)
   words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_plain(text, dict = dict)

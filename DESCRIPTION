@@ -17,7 +17,8 @@ BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
   xml2, 
-  hunspell (>= 2.7),
+  hunspell (>= 2.8),
   knitr
+Suggests: pdftools 
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
