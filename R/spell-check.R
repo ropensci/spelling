@@ -20,12 +20,15 @@
 #' @family spelling
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
 #' @param vignettes also check all `rmd` and `rnw` files in the pkg `vignettes` folder
-#' @param lang dictionary string for [hunspell][hunspell::dictionary],
-#' usually either `"en_US"` or `"en_GB"`.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
-spell_check_package <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", use_wordlist = TRUE){
+#' @param lang __DEPRECATED__. Please use the `Language` field in `DESCRIPTION` to specify
+#' either `"en-US"` or `"en-GB"`.
+spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)
+
+  # Get language from DESCRIPTION
+  lang <- normalize_lang(pkg$language)
 
   # Add custom words to the ignore list
   add_words <- if(isTRUE(use_wordlist))
@@ -78,7 +81,7 @@ as_package <- function(pkg){
   pkg <- as.list(read.dcf(description)[1,])
   names(pkg) <- tolower(names(pkg))
   pkg$path <- dirname(description)
-  return(pkg)
+  structure(pkg, class = 'package')
 }
 
 # Find all occurences for each word
@@ -121,19 +124,22 @@ print.summary_spellcheck <- function(x, ...){
 #' @rdname spell_check_package
 #' @param error make `R CMD check` fail when spelling errors are found.
 #' Default behaviour only prints spelling errors to the console at the end of `CMD check`.
-spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en_GB", error = FALSE){
+spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
-  update_wordlist(pkg$path, vignettes = vignettes, lang = lang)
+  lang <- gsub("_", "-", lang, fixed = TRUE)
+  add_to_description(pkg, lang = lang)
+  if(!length(pkg$language))
+    pkg$language <- lang
+  update_wordlist(pkg, vignettes = vignettes)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
-  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, lang = %s, error = %s)",
-    deparse(vignettes), deparse(lang), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
+  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, error = %s)",
+    deparse(vignettes), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
-  try(add_to_description(pkg))
 }
 
 #' @export
-spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
+spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL){
   out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
   code <- paste(">", readLines("spelling.R"), collapse = "\n")
   out_save <- sub("@INPUT@", code, out_save, fixed = TRUE)
@@ -154,7 +160,7 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
     warning("Failed to find package source directory")
     return(invisible())
   }
-  results <- spell_check_package(pkg_dir, vignettes = vignettes, lang = lang)
+  results <- spell_check_package(pkg_dir, vignettes = vignettes)
   if(nrow(results)){
     if(isTRUE(error)){
       output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
@@ -167,15 +173,19 @@ spell_check_test <- function(vignettes = TRUE, lang = "en_GB", error = FALSE){
   cat("All Done!\n")
 }
 
-add_to_description <- function(pkg){
-  if(!grepl("spelling", pkg$suggests)){
-    desc <- normalizePath(file.path(pkg$path, "DESCRIPTION"), mustWork = TRUE)
-    lines <- readLines(desc, warn = FALSE)
-    out <- if(!any(grepl("^Suggests", lines))){
+add_to_description <- function(pkg, lang = NULL){
+  desc <- normalizePath(file.path(pkg$path, "DESCRIPTION"), mustWork = TRUE)
+  lines <- readLines(desc, warn = FALSE)
+  if(!any(grepl("spelling", c(pkg$package, pkg$suggests, pkg$imports, pkg$depends)))){
+    lines <- if(!any(grepl("^Suggests", lines))){
       c(lines, "Suggests:\n    spelling")
     } else {
       sub("^Suggests:", "Suggests:\n    spelling,", lines)
     }
-    writeLines(out, desc)
   }
+  if(!length(pkg$language)){
+    message(sprintf("Adding 'Language: %s' to DESCRIPTION", lang))
+    lines <- c(lines, paste("Language:", lang))
+  }
+  writeLines(lines, desc)
 }
