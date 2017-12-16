@@ -1,6 +1,7 @@
 language: r
 cache: packages
 latex: false
+fortran: false
 
 matrix:
   include:
@@ -9,6 +10,11 @@ matrix:
     - os: linux
       dist: trusty
       env: R_CODECOV=true
+
+addons:
+  apt:
+    packages:
+      - libpoppler-cpp-dev
 
 r_github_packages:
   - jimhester/covr
@@ -23,7 +29,3 @@ notifications:
 
 after_success:
   - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov(type = "all")'; fi
-
-# Prevents Travis timeout for building magick
-before_install:
-  - (while true; do echo 'Ping? Pong!'; sleep 500; done) &
