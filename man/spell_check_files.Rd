@@ -14,8 +14,7 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 
 \item{ignore}{character vector with words which will be added to the \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{lang}{\strong{DEPRECATED}. Please use the \code{Language} field in \code{DESCRIPTION} to specify
-either \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
 
 \item{text}{character vector with plain text}
 }

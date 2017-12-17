@@ -19,14 +19,15 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
-\item{lang}{\strong{DEPRECATED}. Please use the \code{Language} field in \code{DESCRIPTION} to specify
-either \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
 
 \item{error}{make \code{R CMD check} fail when spelling errors are found.
 Default behaviour only prints spelling errors to the console at the end of \code{CMD check}.}
 }
 \description{
 Automatically spell-check package description, documentation, and vignettes.
+The preferred spelling language (typically \code{en-GB} or \code{en_US}) should be specified in
+the \code{Language} field from your package \code{DESCRIPTION}.
 }
 \details{
 Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields in the

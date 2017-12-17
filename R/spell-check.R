@@ -1,6 +1,8 @@
 #' Package Spell Checking
 #'
 #' Automatically spell-check package description, documentation, and vignettes.
+#' The preferred spelling language (typically `en-GB` or `en_US`) should be specified in
+#' the `Language` field from your package `DESCRIPTION`.
 #'
 #' Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields in the
 #' `DESCRIPTION` file. Use the [WORDLIST][get_wordlist] file to allow custom words in your
@@ -21,8 +23,7 @@
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
 #' @param vignettes also check all `rmd` and `rnw` files in the pkg `vignettes` folder
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
-#' @param lang __DEPRECATED__. Please use the `Language` field in `DESCRIPTION` to specify
-#' either `"en-US"` or `"en-GB"`.
+#' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)
@@ -127,10 +128,9 @@ print.summary_spellcheck <- function(x, ...){
 spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
-  lang <- gsub("_", "-", lang, fixed = TRUE)
-  add_to_description(pkg, lang = lang)
-  if(!length(pkg$language))
-    pkg$language <- lang
+  lang <- normalize_lang(lang)
+  pkg$language <- lang
+  update_description(pkg, lang = lang)
   update_wordlist(pkg, vignettes = vignettes)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
   writeLines(sprintf("spelling::spell_check_test(vignettes = %s, error = %s)",
@@ -173,7 +173,7 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL){
   cat("All Done!\n")
 }
 
-add_to_description <- function(pkg, lang = NULL){
+update_description <- function(pkg, lang = NULL){
   desc <- normalizePath(file.path(pkg$path, "DESCRIPTION"), mustWork = TRUE)
   lines <- readLines(desc, warn = FALSE)
   if(!any(grepl("spelling", c(pkg$package, pkg$suggests, pkg$imports, pkg$depends)))){
@@ -183,9 +183,14 @@ add_to_description <- function(pkg, lang = NULL){
       sub("^Suggests:", "Suggests:\n    spelling,", lines)
     }
   }
-  if(!length(pkg$language)){
-    message(sprintf("Adding 'Language: %s' to DESCRIPTION", lang))
-    lines <- c(lines, paste("Language:", lang))
+  is_lang <- grepl("^Language:", lines, ignore.case = TRUE)
+  isolang <- gsub("_", "-", lang, fixed = TRUE)
+  if(any(is_lang)){
+    is_lang <- which(grepl("^Language:", lines))
+    lines[is_lang] <- paste("Language:", isolang)
+  } else {
+    message(sprintf("Adding 'Language: %s' to DESCRIPTION", isolang))
+    lines <- c(lines, paste("Language:", isolang))
   }
   writeLines(lines, desc)
 }
