@@ -1,3 +1,6 @@
+1.2
+  - Internally normalize all case of lang strings to lower_UPPER e.g en_US
+
 1.1
   - Breaking: Package spell-checker now uses language from DESCRIPTION
   - Require hunspell 2.9 dependency (better parsing and dicationaries)

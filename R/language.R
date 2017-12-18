@@ -16,5 +16,9 @@ normalize_lang <- function(lang = NULL){
     lang <- paste(tolower(lang), toupper(lang), sep = "_")
     message(sprintf("Found ambiguous language '%s'. Defaulting to '%s'", oldlang, lang))
   }
-  gsub("-", "_", lang, fixed = TRUE)
+  lang <- gsub("-", "_", lang, fixed = TRUE)
+  parts <- strsplit(lang, "_", fixed = TRUE)[[1]]
+  parts[1] <- tolower(parts[1])
+  parts[-1] <- toupper(parts[-1])
+  paste(parts, collapse = "_")
 }
