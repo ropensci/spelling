@@ -1,12 +1,15 @@
 #' Package Spell Checking
 #'
 #' Automatically spell-check package description, documentation, and vignettes.
-#' The preferred spelling language (typically `en-GB` or `en_US`) should be specified in
-#' the `Language` field from your package `DESCRIPTION`.
 #'
-#' Parse and spell check R package manual pages, rmd/rnw vignettes, and text fields in the
-#' `DESCRIPTION` file. Use the [WORDLIST][get_wordlist] file to allow custom words in your
-#' package, which will be added to the dictionary when spell checking.
+#' Parses and checks R manual pages, rmd/rnw vignettes, and text fields in the
+#' package `DESCRIPTION` file.
+#'
+#' The preferred spelling language (typically `en-GB` or `en-US`) should be specified
+#' in the `Language` field from your package `DESCRIPTION`. To whitelist custom words
+#' use the package [WORDLIST][get_wordlist] file which will be added to the dictionary
+#' when spell checking. See [update_wordlist] to automatically populate and update this
+#' file.
 #'
 #' The [spell_check_setup] function adds a unit test to your package which automatically
 #' runs a spell check on documentation and vignettes during `R CMD check`. By default this
@@ -123,8 +126,8 @@ print.summary_spellcheck <- function(x, ...){
 #' @export
 #' @aliases spell_check_test
 #' @rdname spell_check_package
-#' @param error make `R CMD check` fail when spelling errors are found.
-#' Default behaviour only prints spelling errors to the console at the end of `CMD check`.
+#' @param error should `CMD check` fail if spelling errors are found?
+#' Default only prints results.
 spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE){
   # Get package info
   pkg <- as_package(pkg)
