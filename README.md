@@ -9,8 +9,8 @@
 > Tools for Spell Checking in R
 
 Spell checking common document formats including latex, markdown, manual 
-pages, and description files. Includes utilities to spell automate spell checking
-R package documentation and vignettes as a unit test during CMD check.
+pages, and description files. Includes utilities to automate the spell checking
+of R package documentation and vignettes as a unit test during CMD check.
 
 ## Installation
 
