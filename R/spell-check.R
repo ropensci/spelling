@@ -136,7 +136,8 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
   update_description(pkg, lang = lang)
   update_wordlist(pkg, vignettes = vignettes)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
-  writeLines(sprintf("spelling::spell_check_test(vignettes = %s, error = %s)",
+  writeLines(sprintf("if(identical(Sys.getenv('NOT_CRAN'), 'true') && requireNamespace('spelling', quietly=TRUE))
+  spelling::spell_check_test(vignettes = %s, error = %s)",
     deparse(vignettes), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
 }
@@ -144,7 +145,7 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
 #' @export
 spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL){
   out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
-  code <- paste(">", readLines("spelling.R"), collapse = "\n")
+  code <- format_syntax(readLines("spelling.R"))
   out_save <- sub("@INPUT@", code, out_save, fixed = TRUE)
   writeLines(out_save, "spelling.Rout.save")
 
@@ -196,4 +197,11 @@ update_description <- function(pkg, lang = NULL){
     lines <- c(lines, paste("Language:", isolang))
   }
   writeLines(lines, desc)
+}
+
+format_syntax <- function(txt){
+  pt <- getOption('prompt')
+  ct <- getOption('continue')
+  prefix <- c(pt, rep(ct, length(txt) - 1))
+  paste(prefix, txt, collapse = "\n", sep = "")
 }
