@@ -1,6 +1,6 @@
 1.2
   - Internally normalize all case of lang strings to lower_UPPER e.g en_US
-  - Skip automatic spell check on CRAN or when 'spelling' is unavailable
+  - Only run automatic check when 'spelling' is available and NOT_CRAN is set
 
 1.1
   - Breaking: Package spell-checker now uses language from DESCRIPTION
