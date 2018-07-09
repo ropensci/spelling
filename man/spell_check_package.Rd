@@ -38,8 +38,9 @@ when spell checking. See \link{update_wordlist} to automatically populate and up
 file.
 
 The \link{spell_check_setup} function adds a unit test to your package which automatically
-runs a spell check on documentation and vignettes during \code{R CMD check}. By default this
-unit test never fails; it merely prints potential spelling errors to the console.
+runs a spell check on documentation and vignettes during \code{R CMD check} if the environment
+variable \code{NOT_CRAN} is set to \code{TRUE}. By default this unit test never fails; it merely
+prints potential spelling errors to the console.
 
 Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Other languages
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
@@ -48,4 +49,3 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{wordlist}}
 }
-\concept{spelling}
