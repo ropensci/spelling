@@ -137,7 +137,7 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
   update_description(pkg, lang = lang)
   update_wordlist(pkg, vignettes = vignettes)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
-  writeLines(sprintf("if(requireNamespace('spelling', quietly = TRUE))
+  writeLines(sprintf("if (requireNamespace(\"spelling\", quietly = TRUE))
   spelling::spell_check_test(vignettes = %s, error = %s,
                              skip_on_cran = TRUE)",
     deparse(vignettes), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
