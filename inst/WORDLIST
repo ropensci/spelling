@@ -1,4 +1,7 @@
 CMD
-pkg
+Parsers
 rmd
 rnw
+whitelist
+wordlist
+WORDLIST
