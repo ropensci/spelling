@@ -67,6 +67,7 @@ spell_check_file_text <- function(file, dict){
 
 spell_check_file_rd <- function(rdfile, dict){
   text <- tools::RdTextFilter(rdfile)
+  Encoding(text) <- "UTF-8"
   spell_check_plain(text, dict = dict)
 }
 

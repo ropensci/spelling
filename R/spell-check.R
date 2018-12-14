@@ -87,7 +87,9 @@ as_package <- function(pkg){
   } else {
     normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
   }
-  pkg <- as.list(read.dcf(description)[1,])
+  pkg <- read.dcf(description)[1,]
+  Encoding(pkg) = "UTF-8"
+  pkg <- as.list(pkg)
   names(pkg) <- tolower(names(pkg))
   pkg$path <- dirname(description)
   structure(pkg, class = 'package')

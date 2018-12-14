@@ -9,7 +9,8 @@
 #' @param extensions render markdown extensions? Passed to [commonmark][commonmark::markdown_xml]
 parse_text_md <- function(path, extensions = TRUE){
   # Get markdown AST as xml doc
-  md <- commonmark::markdown_xml(readLines(path, warn = FALSE), sourcepos = TRUE, extensions = extensions)
+  md <- commonmark::markdown_xml(readLines(path, warn = FALSE, encoding = 'UTF-8'),
+                                 sourcepos = TRUE, extensions = extensions)
   doc <- xml2::xml_ns_strip(xml2::read_xml(md))
 
   # Find text nodes and their location in the markdown source doc

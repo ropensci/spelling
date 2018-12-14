@@ -1,6 +1,7 @@
 1.3
   - Use tools::file_ext instead of knitr:::file_ext
   - spell_check_package() now also looks for md/rmd files in the package root
+  - Treat all input as UTF-8. Fixes some false positives on Windows
 
 1.2
   - Internally normalize all case of lang strings to lower_UPPER e.g en_US
