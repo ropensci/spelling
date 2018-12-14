@@ -31,3 +31,4 @@ spell_check_files(files)
 Other spelling: \code{\link{spell_check_package}},
   \code{\link{wordlist}}
 }
+\concept{spelling}

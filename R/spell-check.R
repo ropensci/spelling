@@ -25,7 +25,8 @@
 #' @aliases spelling
 #' @family spelling
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
-#' @param vignettes also check all `rmd` and `rnw` files in the pkg `vignettes` folder
+#' @param vignettes check all `rmd` and `rnw` files in the pkg root directory (e.g.
+#' `readme.md`) and package `vignettes` folder.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
@@ -59,8 +60,11 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   all_lines <- c(rd_lines, pkg_lines)
 
   if(isTRUE(vignettes)){
+    # Where to check for rmd/md files
+    rmd_dirs <- c(pkg$path, file.path(pkg$path, "vignettes"))
+
     # Markdown vignettes
-    md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
+    md_files <- list.files(rmd_dirs, pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
     md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
 
     # Sweave vignettes

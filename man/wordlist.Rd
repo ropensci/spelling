@@ -13,7 +13,8 @@ get_wordlist(pkg = ".")
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{also check all \code{rmd} and \code{rnw} files in the pkg \code{vignettes} folder}
+\item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
+\code{readme.md}) and package \code{vignettes} folder.}
 
 \item{confirm}{show changes and ask confirmation before adding new words to the list}
 }
@@ -33,3 +34,4 @@ they have been removed from the documentation or added to the \code{lang} dictio
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{spell_check_package}}
 }
+\concept{spelling}

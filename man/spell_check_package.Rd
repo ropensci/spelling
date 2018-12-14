@@ -15,7 +15,8 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{also check all \code{rmd} and \code{rnw} files in the pkg \code{vignettes} folder}
+\item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
+\code{readme.md}) and package \code{vignettes} folder.}
 
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
@@ -49,3 +50,4 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{wordlist}}
 }
+\concept{spelling}
