@@ -5,7 +5,8 @@
 \alias{parse_text_md}
 \title{Text Parsers}
 \usage{
-parse_text_md(path, extensions = TRUE)
+parse_text_md(path, extensions = TRUE, yaml_fields = c("title",
+  "subtitle", "description"))
 }
 \arguments{
 \item{path}{markdown file}
