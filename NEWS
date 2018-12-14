@@ -3,6 +3,7 @@
   - spell_check_package() now also looks for md/rmd files in the package root
   - Treat all input as UTF-8. Fixes some false positives on Windows
   - Ignore yaml front matter in markdown except for 'title', 'subtitle', and 'description'
+  - Properly parse authors@R field for ignore list (issue #2)
 
 1.2
   - Internally normalize all case of lang strings to lower_UPPER e.g en_US

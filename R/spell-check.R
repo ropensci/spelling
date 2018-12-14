@@ -39,7 +39,11 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   # Add custom words to the ignore list
   add_words <- if(isTRUE(use_wordlist))
     get_wordlist(pkg$path)
-  author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
+  author <- if(length(pkg[['authors@r']])){
+    parse_r_field(pkg[['authors@r']])
+  } else {
+    strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
+  }
   ignore <- unique(c(pkg$package, author, hunspell::en_stats, add_words))
 
   # Create the hunspell dictionary object
@@ -217,4 +221,13 @@ format_syntax <- function(txt){
   ct <- getOption('continue')
   prefix <- c(pt, rep(ct, length(txt) - 1))
   paste(prefix, txt, collapse = "\n", sep = "")
+}
+
+parse_r_field <- function(txt){
+  tryCatch({
+    info <- eval(parse(text = txt))
+    unlist(info, recursive = TRUE, use.names = FALSE)
+  }, error = function(e){
+    NULL
+  })
 }
