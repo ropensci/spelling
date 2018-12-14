@@ -1,4 +1,6 @@
+AppVeyor
 CMD
 pkg
 rmd
 rnw
+RStudio
