@@ -7,10 +7,18 @@
 #' @name parse_text
 #' @param path markdown file
 #' @param extensions render markdown extensions? Passed to [commonmark][commonmark::markdown_xml]
-parse_text_md <- function(path, extensions = TRUE){
+parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"subtitle", "description")){
+  # Read file and remove yaml font matter
+  text <- readLines(path, warn = FALSE, encoding = 'UTF-8')
+  parts <- partition_yaml_front_matter(text)
+  if(length(parts$front_matter)){
+    yaml_fields <- paste(yaml_fields, collapse = "|")
+    has_field <- grepl(paste0("^\\s*(",yaml_fields, ")"), parts$front_matter, ignore.case = TRUE)
+    text[which(!has_field)] <- ""
+  }
+
   # Get markdown AST as xml doc
-  md <- commonmark::markdown_xml(readLines(path, warn = FALSE, encoding = 'UTF-8'),
-                                 sourcepos = TRUE, extensions = extensions)
+  md <- commonmark::markdown_xml(text, sourcepos = TRUE, extensions = extensions)
   doc <- xml2::xml_ns_strip(xml2::read_xml(md))
 
   # Find text nodes and their location in the markdown source doc
