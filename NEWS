@@ -1,5 +1,5 @@
 2.0
-  - spell_check_package() now also checks news.md and readme.md in the package root
+  - spell_check_package() now also checks README.md and NEWS.md in the package root
   - Enforce latest hunspell and libhunspell, which include updated dictionaries
   - Treat all input as UTF-8. Fixes some false positives on Windows
   - Ignore yaml front matter in markdown except for 'title', 'subtitle', and 'description'
