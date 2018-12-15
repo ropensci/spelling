@@ -6,6 +6,8 @@
 #' @rdname parse_text
 #' @name parse_text
 #' @param path markdown file
+#' @param yaml_fields character vector indicating which fields of the yaml
+#' front matter should be spell checked.
 #' @param extensions render markdown extensions? Passed to [commonmark][commonmark::markdown_xml]
 parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"subtitle", "description")){
   # Read file and remove yaml font matter

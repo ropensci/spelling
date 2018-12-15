@@ -12,6 +12,9 @@ parse_text_md(path, extensions = TRUE, yaml_fields = c("title",
 \item{path}{markdown file}
 
 \item{extensions}{render markdown extensions? Passed to \link[commonmark:markdown_xml]{commonmark}}
+
+\item{yaml_fields}{character vector indicating which fields of the yaml
+front matter should be spell checked.}
 }
 \description{
 Parse text from various formats and return a data frame with text lines
