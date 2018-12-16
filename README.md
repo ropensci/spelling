@@ -20,12 +20,17 @@ define a 'wordlist' to allow custom terminology without having to abuse punctuat
 The function `spell_check_files` automatically parses known text formats and only spell checks text blocks, not code chunks.
 
 ```r
-spell_check_files('README.md')
+spell_check_files('README.md', lang = 'en_US')
 #   WORD       FOUND IN
 # AppVeyor   README.md:5
 # CMD        README.md:12
 # RStudio    README.md:8
 ```
+
+For more information about the underlying spelling engine and how to add 
+support for other languages, see the [hunspell package](https://bit.ly/2EquLKy).
+
+![screenshot](https://jeroen.github.io/images/rs-hunspell.png)
 
 ## Spell Check a Package
 
