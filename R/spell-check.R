@@ -29,6 +29,7 @@
 #' `readme.md`) and package `vignettes` folder.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
+#' For supporting other languages, see the [hunspell vignette](https://bit.ly/2EquLKy).
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)

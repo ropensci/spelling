@@ -20,7 +20,8 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
+For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
 
 \item{error}{should \code{CMD check} fail if spelling errors are found?
 Default only prints results.}

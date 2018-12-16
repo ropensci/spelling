@@ -14,7 +14,8 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 
 \item{ignore}{character vector with words which will be added to the \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
+For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
 
 \item{text}{character vector with plain text}
 }
