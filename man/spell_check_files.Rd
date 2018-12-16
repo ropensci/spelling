@@ -22,6 +22,15 @@ For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell v
 \description{
 Perform a spell check on document files or plain text.
 }
+\details{
+This function parses a file based on the file extension, and checks only
+text fields while ignoring code chunks and meta data. It works particularly
+well for markdown, but also latex, html, xml, pdf, and plain text are
+supported.
+
+For more information about the underlying spelling engine, see the
+\href{https://bit.ly/2EquLKy}{hunspell package}.
+}
 \examples{
 # Example files
 files <- list.files(system.file("examples", package = "knitr"),

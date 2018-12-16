@@ -2,6 +2,14 @@
 #'
 #' Perform a spell check on document files or plain text.
 #'
+#' This function parses a file based on the file extension, and checks only
+#' text fields while ignoring code chunks and meta data. It works particularly
+#' well for markdown, but also latex, html, xml, pdf, and plain text are
+#' supported.
+#'
+#' For more information about the underlying spelling engine, see the
+#' [hunspell package](https://bit.ly/2EquLKy).
+#'
 #' @rdname spell_check_files
 #' @family spelling
 #' @inheritParams spell_check_package
