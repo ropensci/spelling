@@ -1,5 +1,6 @@
 AppVeyor
 CMD
+devtools
 pkg
 rmd
 rnw
