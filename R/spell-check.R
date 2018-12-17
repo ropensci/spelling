@@ -68,7 +68,7 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
     # Where to check for rmd/md files
     vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
                              ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
-    root_files <- list.files(pkg$path, pattern = "(readme|news|changes).r?md",
+    root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?md",
                              ignore.case = TRUE, full.names = TRUE)
 
     # Markdown vignettes
