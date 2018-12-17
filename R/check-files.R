@@ -81,6 +81,9 @@ spell_check_file_rd <- function(rdfile, dict){
 
 spell_check_file_md <- function(path, dict){
   words <- parse_text_md(path)
+
+  # Filter out citation keys, see https://github.com/ropensci/spelling/issues/9
+  words$text <- gsub("\\S*@\\S+", "", words$text, perl = TRUE)
   words$startline <- vapply(strsplit(words$position, ":", fixed = TRUE), `[[`, character(1), 1)
   bad_words <- hunspell::hunspell(words$text, dict = dict)
   vapply(sort(unique(unlist(bad_words))), function(word) {
