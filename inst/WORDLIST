@@ -1,4 +1,7 @@
+AppVeyor
 CMD
+devtools
+hunspell
 pkg
 Parsers
 rmd
@@ -6,3 +9,5 @@ rnw
 whitelist
 wordlist
 WORDLIST
+RStudio
+yaml

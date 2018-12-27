@@ -2,7 +2,7 @@
 remove_chunks <- function(path) {
   path <- normalizePath(path, mustWork = TRUE)
   filename <- basename(path)
-  lines <- readLines(path)
+  lines <- readLines(path, encoding = 'UTF-8')
 
   pattern <- get_knitr_pattern(filename, lines)
   if (is.null(pattern$chunk.begin) || is.null(pattern$chunk.end)) {

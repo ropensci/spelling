@@ -15,11 +15,13 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
-\item{vignettes}{also check all \code{rmd} and \code{rnw} files in the pkg \code{vignettes} folder}
+\item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
+\code{readme.md}) and package \code{vignettes} folder.}
 
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
+For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
 
 \item{error}{should \code{CMD check} fail if spelling errors are found?
 Default only prints results.}
@@ -49,3 +51,4 @@ require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspe
 Other spelling: \code{\link{spell_check_files}},
   \code{\link{wordlist}}
 }
+\concept{spelling}

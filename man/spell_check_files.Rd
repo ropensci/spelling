@@ -14,12 +14,22 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 
 \item{ignore}{character vector with words which will be added to the \link[hunspell:dictionary]{hunspell::dictionary}}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
+For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
 
 \item{text}{character vector with plain text}
 }
 \description{
 Perform a spell check on document files or plain text.
+}
+\details{
+This function parses a file based on the file extension, and checks only
+text fields while ignoring code chunks and meta data. It works particularly
+well for markdown, but also latex, html, xml, pdf, and plain text are
+supported.
+
+For more information about the underlying spelling engine, see the
+\href{https://bit.ly/2EquLKy}{hunspell package}.
 }
 \examples{
 # Example files
@@ -31,3 +41,4 @@ spell_check_files(files)
 Other spelling: \code{\link{spell_check_package}},
   \code{\link{wordlist}}
 }
+\concept{spelling}

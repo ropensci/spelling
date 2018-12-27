@@ -1,6 +1,6 @@
 Package: spelling
 Title: Tools for Spell Checking in R
-Version: 1.2
+Version: 2.0
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
     person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
@@ -17,9 +17,9 @@ BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
   xml2, 
-  hunspell (>= 2.9),
+  hunspell (>= 3.0),
   knitr
 Suggests: pdftools 
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
 Language: en-GB

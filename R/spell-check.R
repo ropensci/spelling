@@ -25,9 +25,11 @@
 #' @aliases spelling
 #' @family spelling
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
-#' @param vignettes also check all `rmd` and `rnw` files in the pkg `vignettes` folder
+#' @param vignettes check all `rmd` and `rnw` files in the pkg root directory (e.g.
+#' `readme.md`) and package `vignettes` folder.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
+#' For supporting other languages, see the [hunspell vignette](https://bit.ly/2EquLKy).
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
   # Get package info
   pkg <- as_package(pkg)
@@ -38,7 +40,11 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   # Add custom words to the ignore list
   add_words <- if(isTRUE(use_wordlist))
     get_wordlist(pkg$path)
-  author <- strsplit(pkg$author, " ", fixed = TRUE)[[1]]
+  author <- if(length(pkg[['authors@r']])){
+    parse_r_field(pkg[['authors@r']])
+  } else {
+    strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
+  }
   ignore <- unique(c(pkg$package, author, hunspell::en_stats, add_words))
 
   # Create the hunspell dictionary object
@@ -59,8 +65,14 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   all_lines <- c(rd_lines, pkg_lines)
 
   if(isTRUE(vignettes)){
+    # Where to check for rmd/md files
+    vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
+                             ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
+    root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?md",
+                             ignore.case = TRUE, full.names = TRUE)
+
     # Markdown vignettes
-    md_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$", ignore.case = TRUE, full.names = TRUE)
+    md_files <- normalizePath(c(root_files, vign_files))
     md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
 
     # Sweave vignettes
@@ -83,7 +95,9 @@ as_package <- function(pkg){
   } else {
     normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
   }
-  pkg <- as.list(read.dcf(description)[1,])
+  pkg <- read.dcf(description)[1,]
+  Encoding(pkg) = "UTF-8"
+  pkg <- as.list(pkg)
   names(pkg) <- tolower(names(pkg))
   pkg$path <- dirname(description)
   structure(pkg, class = 'package')
@@ -211,4 +225,13 @@ format_syntax <- function(txt){
   ct <- getOption('continue')
   prefix <- c(pt, rep(ct, length(txt) - 1))
   paste(prefix, txt, collapse = "\n", sep = "")
+}
+
+parse_r_field <- function(txt){
+  tryCatch({
+    info <- eval(parse(text = txt))
+    unlist(info, recursive = TRUE, use.names = FALSE)
+  }, error = function(e){
+    NULL
+  })
 }
