@@ -162,7 +162,8 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
 spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_on_cran = TRUE){
   if(isTRUE(skip_on_cran)){
     not_cran <- Sys.getenv('NOT_CRAN')
-    if(is.na(match(not_cran, c("1", "TRUE", "true", 'YES'))))
+    # See logic in tools:::config_val_to_logical
+    if(is.na(match(tolower(not_cran), c("1", "yes", "true"))))
       return(NULL)
   }
   out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
