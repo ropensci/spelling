@@ -15,6 +15,7 @@
 #' @inheritParams spell_check_package
 #' @param path path to file or to spell check
 #' @param ignore character vector with words which will be added to the [hunspell::dictionary]
+#' @importFrom utils getFromNamespace
 #' @export
 #' @examples # Example files
 #' files <- list.files(system.file("examples", package = "knitr"),
@@ -24,7 +25,13 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
   stopifnot(is.character(ignore))
   lang <- normalize_lang(lang)
   dict <- hunspell::dictionary(lang, add_words = ignore)
-  path <- normalizePath(path, mustWork = TRUE)
+  if (missing(path) && requireNamespace('rstudioapi', quietly = TRUE)) {
+    context_fun <- tryCatch(
+      getFromNamespace('getSourceEditorContext', 'rstudioapi'),
+      error = function(e) rstudioapi::getActiveDocumentContext
+    )
+    path <- context_fun()[['path']]
+  } else path <- normalizePath(path, mustWork = TRUE)
   lines <- lapply(sort(path), spell_check_file_one, dict = dict)
   summarize_words(path, lines)
 }

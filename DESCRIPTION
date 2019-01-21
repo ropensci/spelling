@@ -19,7 +19,7 @@ Imports:
   xml2, 
   hunspell (>= 3.0),
   knitr
-Suggests: pdftools 
+Suggests: pdftools, rstudioapi 
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Language: en-GB
