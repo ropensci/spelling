@@ -36,8 +36,12 @@ spell_check_file_one <- function(path, dict){
     return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
   if(grepl("\\.(tex)$",path, ignore.case = TRUE))
     return(spell_check_file_plain(path = path, format = "latex", dict = dict))
-  if(grepl("\\.(html?)$",path, ignore.case = TRUE))
+  if(grepl("\\.(html?)$", path, ignore.case = TRUE)){
+    try({
+      path <- pre_filter_html(path)
+    })
     return(spell_check_file_plain(path = path, format = "html", dict = dict))
+  }
   if(grepl("\\.(xml)$",path, ignore.case = TRUE))
     return(spell_check_file_plain(path = path, format = "xml", dict = dict))
   if(grepl("\\.(pdf)$",path, ignore.case = TRUE))
@@ -111,4 +115,22 @@ spell_check_file_pdf <- function(path, format, dict){
   words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_plain(text, dict = dict)
+}
+
+pre_filter_html <- function(path){
+  doc <- xml2::read_html(path, options = c("RECOVER", "NOERROR"))
+  src_nodes <- xml2::xml_find_all(doc, ".//*[@src]")
+  xml2::xml_set_attr(src_nodes, 'src', replace_text(xml2::xml_attr(src_nodes, 'src')))
+  script_nodes <- xml2::xml_find_all(doc, "(.//script|.//style)")
+  xml2::xml_set_text(script_nodes, replace_text(xml2::xml_text(script_nodes)))
+  tmp <- file.path(tempdir(), basename(path))
+  unlink(tmp)
+  xml2::write_html(doc, tmp)
+  return(tmp)
+}
+
+# This replaces all text except for linebreaks.
+# Therefore line numbers in spelling output should be unaffected
+replace_text <- function(x){
+  gsub(".*", "", x, perl = TRUE)
 }

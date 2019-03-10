@@ -1,3 +1,7 @@
+2.1
+  - Pre-filter script/style/img tags when checking html files because the huge
+    embedded binary blogs produced by rmarkdown slow down the hunspell parser.
+
 2.0
   - spell_check_package() now also checks README.md and NEWS.md in the package root
   - Enforce latest hunspell and libhunspell, which include updated dictionaries
