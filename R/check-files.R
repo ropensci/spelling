@@ -125,7 +125,7 @@ pre_filter_html <- function(path){
   xml2::xml_set_text(script_nodes, replace_text(xml2::xml_text(script_nodes)))
   tmp <- file.path(tempdir(), basename(path))
   unlink(tmp)
-  xml2::write_html(doc, tmp)
+  xml2::write_html(doc, tmp, options = 'format_whitespace')
   return(tmp)
 }
 
