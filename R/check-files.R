@@ -104,7 +104,7 @@ spell_check_file_knitr <- function(path, format, dict){
 }
 
 spell_check_file_plain <- function(path, format, dict){
-  lines <- readLines(path, warn = FALSE)
+  lines <- readLines(path, warn = FALSE, encoding = 'UTF-8')
   words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_plain(text, dict = dict)
