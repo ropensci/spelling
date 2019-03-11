@@ -24,8 +24,8 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
   stopifnot(is.character(ignore))
   lang <- normalize_lang(lang)
   dict <- hunspell::dictionary(lang, add_words = ignore)
-  path <- normalizePath(path, mustWork = TRUE)
-  lines <- lapply(sort(path), spell_check_file_one, dict = dict)
+  path <- sort(normalizePath(path, mustWork = TRUE))
+  lines <- lapply(path, spell_check_file_one, dict = dict)
   summarize_words(path, lines)
 }
 
