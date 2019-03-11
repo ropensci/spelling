@@ -2,6 +2,7 @@
   - Pre-filter script/style/img tags when checking html files because the huge
     embedded binary blogs produced by rmarkdown slow down the hunspell parser.
   - Treat input files in spell_check_files() as UTF-8 on all platforms
+  - Fix a sorting bug in spell_check_files()
 
 2.0
   - spell_check_package() now also checks README.md and NEWS.md in the package root
