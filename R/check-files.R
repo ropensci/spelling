@@ -117,6 +117,7 @@ spell_check_file_pdf <- function(path, format, dict){
   spell_check_plain(text, dict = dict)
 }
 
+# TODO: this does not retain whitespace in DTD before the <html> tag
 pre_filter_html <- function(path){
   doc <- xml2::read_html(path, options = c("RECOVER", "NOERROR"))
   src_nodes <- xml2::xml_find_all(doc, ".//*[@src]")
