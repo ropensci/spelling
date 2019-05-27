@@ -3,7 +3,7 @@
 #' Parse text from various formats and return a data frame with text lines
 #' and position in the source document.
 #'
-#' @rdname parse_text
+#' @noRd
 #' @name parse_text
 #' @param path markdown file
 #' @param yaml_fields character vector indicating which fields of the yaml
