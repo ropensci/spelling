@@ -1,4 +1,4 @@
-#' Package Spell Checking
+#' Bookdown Spell Checking
 #'
 #' Automatically spell-check bookdown source files.
 #'
