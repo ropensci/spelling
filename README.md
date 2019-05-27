@@ -28,7 +28,7 @@ spell_check_files('README.md', lang = 'en_US')
 ```
 
 For more information about the underlying spelling engine and how to add 
-support for other languages, see the [hunspell package](https://bit.ly/2EquLKy).
+support for other languages, see the [hunspell package](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
 
 ![screenshot](https://jeroen.github.io/images/rs-hunspell.png)
 
