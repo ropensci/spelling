@@ -52,7 +52,11 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
     author <- if(length(pkg[['authors@r']])){
       parse_r_field(pkg[['authors@r']])
     } else {
-      strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
+      if ("author" %in% names(pkg)) {
+        strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
+      } else{
+        author <- NULL
+      }
     }
 
     meta <- c(pkg$package, author)
@@ -65,14 +69,14 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
   dict <- hunspell::dictionary(lang, add_words = sort(ignore))
 
   # Where to check for rmd/md files
-  bookdown_files <- list.files(file.path(pkg$path), pattern = "\\.r?md$",
+  bookdown_files <- list.files(file.path(path), pattern = "\\.rmd$",
                            ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
-  root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?md",
+  root_files <- list.files(file.path(path), pattern = "(readme|news|changes).r?md",
                            ignore.case = TRUE, full.names = TRUE)
 
   # Markdown files
-  md_files <- normalizePath(c(root_files, bookdown_files))
-  md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
+  md_files <- sort(normalizePath(c(root_files, bookdown_files)))
+  md_lines <- lapply(md_files, spell_check_file_md, dict = dict)
 
   all_sources <- md_files
   all_lines <- md_lines
@@ -80,8 +84,13 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
   # Check 'DESCRIPTION' fields
   if (file.exists(file.path(path, "DESCRIPTION"))){
     pkg_fields <- c("title", "description")
+    pkg <- as_package(path)
     pkg_lines <- lapply(pkg_fields, function(x){
-      spell_check_file_text(textConnection(pkg[[x]]), dict = dict)
+      if (x %in% names(pkg)) {
+        spell_check_file_text(textConnection(pkg[[x]]), dict = dict)
+      } else {
+        spell_check_file_text(textConnection(""), dict = dict)
+      }
     })
 
     all_sources <- c(all_sources, pkg_fields)
