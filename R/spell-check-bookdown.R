@@ -37,15 +37,18 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
       # Get language from DESCRIPTION
       lang <- normalize_lang(pkg$language)
     } else {
-      "en-US"
+      lang <- suppressMessages(normalize_lang(NULL))
     }
   } else {
     lang <- normalize_lang(lang)
   }
 
   # Add custom words to the ignore list
+
   add_words <- if(isTRUE(use_wordlist))
-    get_wordlist(path)
+    unlist(strsplit(readLines(get_wordfile(path),
+                              warn = FALSE, encoding = "UTF-8"), " ",
+                    fixed = TRUE))
 
   if (file.exists(file.path(path, "DESCRIPTION"))){
     pkg <- as_package(path)
@@ -99,3 +102,4 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
 
   summarize_words(all_sources, all_lines)
 }
+
