@@ -46,9 +46,7 @@ spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
   # Add custom words to the ignore list
 
   add_words <- if(isTRUE(use_wordlist))
-    unlist(strsplit(readLines(get_wordfile(path),
-                              warn = FALSE, encoding = "UTF-8"), " ",
-                    fixed = TRUE))
+    get_wordfile(path)
 
   if (file.exists(file.path(path, "DESCRIPTION"))){
     pkg <- as_package(path)

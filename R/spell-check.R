@@ -93,8 +93,13 @@ as_package <- function(pkg){
   description <- if(file.exists(file.path(path, "DESCRIPTION.in"))){
     file.path(path, "DESCRIPTION.in")
   } else {
-    normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
+    normalizePath(file.path(path, "DESCRIPTION"), mustWork = FALSE)
   }
+
+  if (!file.exists(description)) {
+    return(list(path = pkg))
+  }
+
   pkg <- read.dcf(description)[1,]
   Encoding(pkg) = "UTF-8"
   pkg <- as.list(pkg)
