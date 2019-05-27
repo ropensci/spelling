@@ -81,7 +81,7 @@ spell_check_file_text <- function(file, dict){
 
 spell_check_description_text <- function(file, dict){
   lines <- readLines(file)
-  lines <- gsub("http\\S*?", "", lines)
+  lines <- gsub("<http\\S+>", "", lines)
   spell_check_plain(lines, dict = dict)
 }
 
