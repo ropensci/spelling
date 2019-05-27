@@ -8,7 +8,7 @@
 #' supported.
 #'
 #' For more information about the underlying spelling engine, see the
-#' [hunspell package](https://bit.ly/2EquLKy).
+#' [hunspell package](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
 #'
 #' @rdname spell_check_files
 #' @family spelling
