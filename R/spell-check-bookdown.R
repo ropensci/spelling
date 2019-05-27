@@ -26,7 +26,7 @@
 #' @param path path to package root directory containing the `DESCRIPTION` file
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
-#' For supporting other languages, see the [hunspell vignette](https://bit.ly/2EquLKy).
+#' For supporting other languages, see the [hunspell vignette](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
 spell_check_bookdown <- function(path = ".", lang = NULL, use_wordlist = TRUE){
 
   # Get language
