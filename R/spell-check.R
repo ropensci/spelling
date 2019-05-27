@@ -51,8 +51,8 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   dict <- hunspell::dictionary(lang, add_words = sort(ignore))
 
   # Check Rd manual files
-  rd_files <- list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
-  rd_lines <- lapply(sort(rd_files), spell_check_file_rd, dict = dict)
+  rd_files <- sort(list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE))
+  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
