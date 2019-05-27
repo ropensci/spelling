@@ -1,0 +1,11 @@
+reference:
+- title: Utilities
+  desc: ~
+  contents:
+  - '`spell_check_files`'
+  - '`wordlist`'
+- title: Convenience functions
+  desc: ~
+  contents:
+  - '`spell_check_package`'
+  - '`spell_check_bookdown`'
