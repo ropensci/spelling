@@ -50,7 +50,7 @@ Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Oth
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }
 \seealso{
-Other spelling: \code{\link{spell_check_files}},
-  \code{\link{wordlist}}
+Other spelling: \code{\link{spell_check_bookdown}},
+  \code{\link{spell_check_files}}, \code{\link{wordlist}}
 }
 \concept{spelling}

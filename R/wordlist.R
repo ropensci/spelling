@@ -15,12 +15,12 @@
 #' @family spelling
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
+#' @param pkg path to package (or bookdown folder)
 #' @inheritParams spell_check_package
 update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
-  pkg <- as_package(pkg)
-  wordfile <- get_wordfile(pkg$path)
-  old_words <- sort(get_wordlist(pkg$path))
-  new_words <- sort(spell_check_package(pkg$path, vignettes = vignettes, use_wordlist = FALSE)$word)
+  wordfile <- get_wordfile(pkg)
+  old_words <- sort(get_wordlist(pkg))
+  new_words <- sort(spell_check_package(pkg, vignettes = vignettes, use_wordlist = FALSE)$word)
   if(isTRUE(all.equal(old_words, new_words))){
     cat(sprintf("No changes required to %s\n", wordfile))
   } else {
@@ -51,8 +51,7 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
 #' @rdname wordlist
 #' @export
 get_wordlist <- function(pkg = "."){
-  pkg <- as_package(pkg)
-  wordfile <- get_wordfile(pkg$path)
+  wordfile <- get_wordfile(pkg)
   out <- if(file.exists(wordfile))
     unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
   as.character(out)

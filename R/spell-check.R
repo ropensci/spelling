@@ -97,6 +97,7 @@ as_package <- function(pkg){
   } else {
     normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
   }
+
   pkg <- read.dcf(description)[1,]
   Encoding(pkg) = "UTF-8"
   pkg <- as.list(pkg)
