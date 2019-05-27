@@ -30,6 +30,8 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
     paste0(collapse = "\n", xml2::xml_text(xml2::xml_find_all(x, "./text")))
   }, character(1))
 
+  values <- gsub("\\{\\#.*\\}", "", values)
+
   data.frame(
     text = values,
     position = sourcepos,
