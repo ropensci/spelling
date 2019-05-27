@@ -14,7 +14,9 @@
 #' The [spell_check_setup] function adds a unit test to your package which automatically
 #' runs a spell check on documentation and vignettes during `R CMD check` if the environment
 #' variable `NOT_CRAN` is set to `TRUE`. By default this unit test never fails; it merely
-#' prints potential spelling errors to the console.
+#' prints potential spelling errors to the console. If not already done,
+#' the [spell_check_setup] function will add `spelling` as a `Suggests` dependency,
+#' and a `Language` field to `DESCRIPTION`.
 #'
 #' Hunspell includes dictionaries for `en_US` and `en_GB` by default. Other languages
 #' require installation of a custom dictionary, see [hunspell][hunspell::hunspell] for details.
