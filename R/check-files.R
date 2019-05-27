@@ -79,6 +79,12 @@ spell_check_file_text <- function(file, dict){
   spell_check_plain(readLines(file), dict = dict)
 }
 
+spell_check_description_text <- function(file, dict){
+  lines <- readLines(file)
+  lines <- gsub("<http\\S+>", "", lines)
+  spell_check_plain(lines, dict = dict)
+}
+
 spell_check_file_rd <- function(rdfile, dict){
   text <- tools::RdTextFilter(rdfile)
   Encoding(text) <- "UTF-8"
