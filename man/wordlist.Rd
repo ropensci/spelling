@@ -11,7 +11,7 @@ update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE)
 get_wordlist(pkg = ".")
 }
 \arguments{
-\item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
+\item{pkg}{path to package (or bookdown folder)}
 
 \item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
 \code{readme.md}) and package \code{vignettes} folder.}
@@ -31,7 +31,8 @@ removes words from the wordlist that no longer appear as spelling errors, either
 they have been removed from the documentation or added to the \code{lang} dictionary.
 }
 \seealso{
-Other spelling: \code{\link{spell_check_files}},
+Other spelling: \code{\link{spell_check_bookdown}},
+  \code{\link{spell_check_files}},
   \code{\link{spell_check_package}}
 }
 \concept{spelling}

@@ -38,7 +38,7 @@ files <- list.files(system.file("examples", package = "knitr"),
 spell_check_files(files)
 }
 \seealso{
-Other spelling: \code{\link{spell_check_package}},
-  \code{\link{wordlist}}
+Other spelling: \code{\link{spell_check_bookdown}},
+  \code{\link{spell_check_package}}, \code{\link{wordlist}}
 }
 \concept{spelling}
