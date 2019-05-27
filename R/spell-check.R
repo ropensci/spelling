@@ -57,7 +57,7 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
   pkg_lines <- lapply(pkg_fields, function(x){
-    spell_check_file_text(textConnection(pkg[[x]]), dict = dict)
+    spell_check_description_text(textConnection(pkg[[x]]), dict = dict)
   })
 
   # Combine
