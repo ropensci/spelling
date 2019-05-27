@@ -30,7 +30,8 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
     paste0(collapse = "\n", xml2::xml_text(xml2::xml_find_all(x, "./text")))
   }, character(1))
 
-  values <- gsub("\\{\\#.*\\}", "", values)
+  # Strip 'heading identifiers', see: https://pandoc.org/MANUAL.html#heading-identifiers
+  values <- gsub('\\{#[^\\n]+\\}\\s*($|\\r?\\n)', '\\1', values, perl = TRUE)
 
   data.frame(
     text = values,
