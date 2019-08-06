@@ -15,7 +15,7 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 \item{ignore}{character vector with words which will be added to the \link[hunspell:dictionary]{hunspell::dictionary}}
 
 \item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
-For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
+For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
 
 \item{text}{character vector with plain text}
 }
@@ -29,7 +29,7 @@ well for markdown, but also latex, html, xml, pdf, and plain text are
 supported.
 
 For more information about the underlying spelling engine, see the
-\href{https://bit.ly/2EquLKy}{hunspell package}.
+\href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell package}.
 }
 \examples{
 # Example files

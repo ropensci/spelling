@@ -29,7 +29,10 @@
 #' @param pkg path to package root directory containing the `DESCRIPTION` file
 #' @param vignettes check all `rmd` and `rnw` files in the pkg root directory (e.g.
 #' `readme.md`) and package `vignettes` folder.
-#' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
+#' @param use_wordlist (logical or character)
+#'   In case of being TRUE (default) the package [WORDLIST][get_wordlist] file is used.
+#'   In case of being FALSE ignore words in the package [WORDLIST][get_wordlist] file.
+#'   In case a character string is given the \code{WORDLIST} of the file in this location is used.
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
 #' For supporting other languages, see the [hunspell vignette](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
@@ -40,8 +43,11 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   lang <- normalize_lang(pkg$language)
 
   # Add custom words to the ignore list
-  add_words <- if(isTRUE(use_wordlist))
+  add_words <- if (isTRUE(use_wordlist)) {
     get_wordlist(pkg$path)
+  } else {
+    parse_wordfile(use_wordlist)
+  }
   author <- if(length(pkg[['authors@r']])){
     parse_r_field(pkg[['authors@r']])
   } else {

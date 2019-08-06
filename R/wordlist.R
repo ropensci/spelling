@@ -53,9 +53,13 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
 get_wordlist <- function(pkg = "."){
   pkg <- as_package(pkg)
   wordfile <- get_wordfile(pkg$path)
-  out <- if(file.exists(wordfile))
-    unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
+  out <- parse_wordfile(wordfile)
   as.character(out)
+}
+
+parse_wordfile <- function(wordfile) {
+  if(file.exists(wordfile))
+    unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
 }
 
 get_wordfile <- function(path){

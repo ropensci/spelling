@@ -18,10 +18,13 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 \item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
 \code{readme.md}) and package \code{vignettes} folder.}
 
-\item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
+\item{use_wordlist}{(logical or character)
+In case of being TRUE (default) the package \link[=get_wordlist]{WORDLIST} file is used.
+In case of being FALSE ignore words in the package \link[=get_wordlist]{WORDLIST} file.
+In case a character string is given the \code{WORDLIST} of the file in this location is used.}
 
 \item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
-For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
+For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
 
 \item{error}{should \code{CMD check} fail if spelling errors are found?
 Default only prints results.}
