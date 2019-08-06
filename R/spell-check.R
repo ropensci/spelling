@@ -33,7 +33,7 @@
 #'   In case of being TRUE (default) the package [WORDLIST][get_wordlist] file is used.
 #'   In case of being FALSE ignore words in the package [WORDLIST][get_wordlist] file.
 #' @param wordlist_path If a file path (character) is given the \code{WORDLIST}
-#'   in this location is used.
+#'   in this location is used. Default value (\code{NULL}) will use \code{<package path>/inst/WORDLIST}
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
 #' For supporting other languages, see the [hunspell vignette](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
 spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE, wordlist_path = NULL){
@@ -45,13 +45,7 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
 
   # Add custom words to the ignore list
   add_words <- if (isTRUE(use_wordlist)) {
-    if (is.null(wordlist_path)) {
-      get_wordlist(pkg$path)
-    } else {
-      stopifnot(is.character(wordlist_path))
-      stopifnot(file.exists(wordlist_path))
-      parse_wordfile(wordlist_path)
-    }
+    get_wordlist(pkg$path, wordlist_path)
   }
   author <- if(length(pkg[['authors@r']])){
     parse_r_field(pkg[['authors@r']])

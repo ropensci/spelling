@@ -6,9 +6,10 @@
 \alias{get_wordlist}
 \title{The WORDLIST file}
 \usage{
-update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE)
+update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE,
+  wordlist_path = NULL)
 
-get_wordlist(pkg = ".")
+get_wordlist(pkg = ".", wordlist_path = NULL)
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
@@ -17,6 +18,9 @@ get_wordlist(pkg = ".")
 \code{readme.md}) and package \code{vignettes} folder.}
 
 \item{confirm}{show changes and ask confirmation before adding new words to the list}
+
+\item{wordlist_path}{If a file path (character) is given the \code{WORDLIST}
+in this location is used. Default value (\code{NULL}) will use \code{<package path>/inst/WORDLIST}}
 }
 \description{
 The package wordlist file is used to allow custom words which will be added to the

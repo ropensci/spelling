@@ -16,10 +16,10 @@
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
 #' @inheritParams spell_check_package
-update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
+update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE, wordlist_path = NULL){
   pkg <- as_package(pkg)
-  wordfile <- get_wordfile(pkg$path)
-  old_words <- sort(get_wordlist(pkg$path))
+  wordfile <- get_wordfile(pkg$path, wordlist_path = wordlist_path)
+  old_words <- sort(get_wordlist(pkg$path, wordlist_path = wordlist_path))
   new_words <- sort(spell_check_package(pkg$path, vignettes = vignettes, use_wordlist = FALSE)$word)
   if(isTRUE(all.equal(old_words, new_words))){
     cat(sprintf("No changes required to %s\n", wordfile))
@@ -50,10 +50,9 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
 
 #' @rdname wordlist
 #' @export
-get_wordlist <- function(pkg = "."){
-  pkg <- as_package(pkg)
-  wordfile <- get_wordfile(pkg$path)
-  out <- parse_wordfile(wordfile)
+get_wordlist <- function(pkg = ".", wordlist_path = NULL){
+  wordlist_loc <- get_wordfile(pkg = pkg, wordlist_path = wordlist_path)
+  out <- parse_wordfile(wordlist_loc)
   as.character(out)
 }
 
@@ -62,6 +61,18 @@ parse_wordfile <- function(wordfile) {
     unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
 }
 
-get_wordfile <- function(path){
+get_wordfile <- function(pkg = ".", wordlist_path = NULL) {
+  if (is.null(wordlist_path)) {
+    pkg <- as_package(pkg)
+    get_package_wordfile(pkg$path)
+  } else {
+    # double check user input
+    stopifnot(is.character(wordlist_path))
+    stopifnot(file.exists(wordlist_path))
+    wordlist_path
+  }
+}
+
+get_package_wordfile <- function(path){
   normalizePath(file.path(path, "inst/WORDLIST"), mustWork = FALSE)
 }

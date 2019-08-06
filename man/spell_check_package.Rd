@@ -23,7 +23,8 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 In case of being TRUE (default) the package \link[=get_wordlist]{WORDLIST} file is used.
 In case of being FALSE ignore words in the package \link[=get_wordlist]{WORDLIST} file.}
 
-\item{wordlist_path}{A character string is given the \code{WORDLIST} of the file in this location is used.}
+\item{wordlist_path}{If a file path (character) is given the \code{WORDLIST}
+in this location is used. Default value (\code{NULL}) will use \code{<package path>/inst/WORDLIST}}
 
 \item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
 For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
