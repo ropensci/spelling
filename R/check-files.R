@@ -85,9 +85,12 @@ spell_check_description_text <- function(file, dict){
   spell_check_plain(lines, dict = dict)
 }
 
-spell_check_file_rd <- function(rdfile, macros = file.path(R.home("share"),
-                                   "Rd", "macros", "system.Rd"), dict{
-  text <- tools::RdTextFilter(rdfile, macros = macros)
+spell_check_file_rd <- function(rdfile, macros = NULL, dict) {
+  if (is.null(macros)) {
+    text <- tools::RdTextFilter(rdfile)
+  } else {
+    text <- tools::RdTextFilter(rdfile, macros = macros)
+  }
   Encoding(text) <- "UTF-8"
   spell_check_plain(text, dict = dict)
 }
