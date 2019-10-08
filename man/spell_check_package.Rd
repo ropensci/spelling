@@ -9,8 +9,7 @@
 \usage{
 spell_check_package(pkg = ".", vignettes = TRUE, use_wordlist = TRUE)
 
-spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
-  error = FALSE)
+spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE)
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
@@ -21,9 +20,9 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US",
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
 \item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
-For supporting other languages, see the \href{https://bit.ly/2EquLKy}{hunspell vignette}.}
+For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
 
-\item{error}{should \code{CMD check} fail if spelling errors are found?
+\item{error}{should \verb{CMD check} fail if spelling errors are found?
 Default only prints results.}
 }
 \description{
@@ -40,7 +39,7 @@ when spell checking. See \link{update_wordlist} to automatically populate and up
 file.
 
 The \link{spell_check_setup} function adds a unit test to your package which automatically
-runs a spell check on documentation and vignettes during \code{R CMD check} if the environment
+runs a spell check on documentation and vignettes during \verb{R CMD check} if the environment
 variable \code{NOT_CRAN} is set to \code{TRUE}. By default this unit test never fails; it merely
 prints potential spelling errors to the console. If not already done,
 the \link{spell_check_setup} function will add \code{spelling} as a \code{Suggests} dependency,
@@ -50,7 +49,7 @@ Hunspell includes dictionaries for \code{en_US} and \code{en_GB} by default. Oth
 require installation of a custom dictionary, see \link[hunspell:hunspell]{hunspell} for details.
 }
 \seealso{
-Other spelling: \code{\link{spell_check_files}},
+Other spelling: \code{\link{spell_check_files}()},
   \code{\link{wordlist}}
 }
 \concept{spelling}

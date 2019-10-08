@@ -39,4 +39,3 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
     stringsAsFactors = FALSE
   )
 }
-

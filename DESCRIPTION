@@ -13,7 +13,8 @@ Description: Spell checking common document formats including latex, markdown, m
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/ropensci/spelling#readme
+URL: https://docs.ropensci.org/spelling (website) 
+    https://github.com/ropensci/spelling#readme (devel)
 BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
@@ -22,5 +23,5 @@ Imports:
   knitr
 Suggests: pdftools 
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 6.1.99.9001
 Language: en-GB
