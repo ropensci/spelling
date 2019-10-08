@@ -86,10 +86,10 @@ spell_check_description_text <- function(file, dict){
 }
 
 spell_check_file_rd <- function(rdfile, macros = NULL, dict) {
-  if (is.null(macros)) {
-    text <- tools::RdTextFilter(rdfile)
+  text <- if (!length(macros)) {
+    tools::RdTextFilter(rdfile)
   } else {
-    text <- tools::RdTextFilter(rdfile, macros = macros)
+    tools::RdTextFilter(rdfile, macros = macros)
   }
   Encoding(text) <- "UTF-8"
   spell_check_plain(text, dict = dict)
