@@ -54,7 +54,12 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
 
   # Check Rd manual files
   rd_files <- sort(list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE))
-  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict)
+  macros <- tools::loadPkgRdMacros(pkg$path)
+  macros <- tools::loadRdMacros(
+    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
+    macros = macros
+  )
+  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict, macros = macros)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
