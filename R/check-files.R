@@ -29,11 +29,11 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
   summarize_words(path, lines)
 }
 
-spell_check_file_one <- function(path, dict, ...){
+spell_check_file_one <- function(path, dict){
   if(grepl("\\.r?md$",path, ignore.case = TRUE))
     return(spell_check_file_md(path, dict = dict))
   if(grepl("\\.rd$", path, ignore.case = TRUE))
-    return(spell_check_file_rd(path, dict = dict, ...))
+    return(spell_check_file_rd(path, dict = dict))
   if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
     return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
   if(grepl("\\.(tex)$",path, ignore.case = TRUE))
