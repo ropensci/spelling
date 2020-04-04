@@ -1,4 +1,7 @@
 2.2
+  - WORDLIST is now sorted with a locale-independent method, which avoids large
+    diffs in version control due to the fact that developpers use different
+    locale, with different lexicographic ordering rules (#48, @bisaloo)
   - spell_check_package() now loads Rd macros (#42)
 
 2.1
