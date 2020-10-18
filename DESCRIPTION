@@ -1,6 +1,6 @@
 Package: spelling
 Title: Tools for Spell Checking in R
-Version: 2.1.9000
+Version: 2.2
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut"),
       comment = c(ORCID = "0000-0002-4035-0289")),
@@ -13,8 +13,8 @@ Description: Spell checking common document formats including latex, markdown, m
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://docs.ropensci.org/spelling (website) 
-    https://github.com/ropensci/spelling#readme (devel)
+URL: https://docs.ropensci.org/spelling/ (website) 
+    https://github.com/ropensci/spelling (devel)
 BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
