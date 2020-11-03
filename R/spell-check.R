@@ -188,6 +188,11 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
         pkg_dir <- source_dir
     }
   }
+  if(!length(pkg_dir) && identical(basename(getwd()), 'tests')){
+    if(file.exists('../DESCRIPTION')){
+      pkg_dir <- dirname(getwd())
+    }
+  }
   if(!length(pkg_dir)){
     warning("Failed to find package source directory from: ", getwd())
     return(invisible())
