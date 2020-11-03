@@ -189,7 +189,7 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
     }
   }
   if(!length(pkg_dir)){
-    warning("Failed to find package source directory")
+    warning("Failed to find package source directory from: ", getwd())
     return(invisible())
   }
   results <- spell_check_package(pkg_dir, vignettes = vignettes)
