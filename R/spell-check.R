@@ -40,9 +40,10 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   lang <- normalize_lang(pkg$language)
 
   # Add custom words to the ignore list
-  add_words <- if(isTRUE(use_wordlist))
+  add_words <- if (isTRUE(use_wordlist))
     get_wordlist(pkg$path)
-  author <- if(length(pkg[['authors@r']])){
+
+  author <- if (length(pkg[['authors@r']])) {
     parse_r_field(pkg[['authors@r']])
   } else {
     strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
@@ -58,7 +59,8 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
     file.path(R.home("share"), "Rd", "macros", "system.Rd"),
     tools::loadPkgRdMacros(pkg$path, macros = NULL)
   )
-  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict, macros = macros)
+
+  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict, macros = macros, ignore = add_words)
 
   # Check 'DESCRIPTION' fields
   pkg_fields <- c("title", "description")
@@ -70,7 +72,7 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
   all_sources <- c(rd_files, pkg_fields)
   all_lines <- c(rd_lines, pkg_lines)
 
-  if(isTRUE(vignettes)){
+  if (isTRUE(vignettes)) {
     # Where to check for rmd/md files
     vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
                              ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
@@ -93,10 +95,10 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
 }
 
 as_package <- function(pkg){
-  if(inherits(pkg, 'package'))
+  if (inherits(pkg, 'package'))
     return(pkg)
   path <- pkg
-  description <- if(file.exists(file.path(path, "DESCRIPTION.in"))){
+  description <- if (file.exists(file.path(path, "DESCRIPTION.in"))) {
     file.path(path, "DESCRIPTION.in")
   } else {
     normalizePath(file.path(path, "DESCRIPTION"), mustWork = TRUE)
@@ -128,7 +130,7 @@ summarize_words <- function(file_names, found_line){
 
 #' @export
 print.summary_spellcheck <- function(x, ...){
-  if(!nrow(x)){
+  if (!nrow(x)) {
     cat("No spelling errors found.\n")
     return(invisible())
   }
@@ -136,7 +138,7 @@ print.summary_spellcheck <- function(x, ...){
   fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
   pretty_names <- sprintf(fmt, words)
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
-  for(i in seq_len(nrow(x))){
+  for (i in seq_len(nrow(x))) {
     cat(pretty_names[i])
     cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
     cat("\n")
@@ -166,10 +168,10 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
 
 #' @export
 spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_on_cran = TRUE){
-  if(isTRUE(skip_on_cran)){
+  if (isTRUE(skip_on_cran)) {
     not_cran <- Sys.getenv('NOT_CRAN')
     # See logic in tools:::config_val_to_logical
-    if(is.na(match(tolower(not_cran), c("1", "yes", "true"))))
+    if (is.na(match(tolower(not_cran), c("1", "yes", "true"))))
       return(NULL)
   }
   out_save <- readLines(system.file("templates/spelling.Rout.save", package = 'spelling'))
@@ -179,27 +181,27 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
 
   # Try to find pkg source directory
   pkg_dir <- list.files("../00_pkg_src", full.names = TRUE)
-  if(!length(pkg_dir)){
+  if (!length(pkg_dir)) {
     # This is where it is on e.g. win builder
     check_dir <- dirname(getwd())
-    if(grepl("\\.Rcheck$", check_dir)){
+    if (grepl("\\.Rcheck$", check_dir)) {
       source_dir <- sub("\\.Rcheck$", "", check_dir)
-      if(file.exists(source_dir))
+      if (file.exists(source_dir))
         pkg_dir <- source_dir
     }
   }
-  if(!length(pkg_dir) && identical(basename(getwd()), 'tests')){
-    if(file.exists('../DESCRIPTION')){
+  if (!length(pkg_dir) && identical(basename(getwd()), 'tests')) {
+    if (file.exists('../DESCRIPTION')) {
       pkg_dir <- dirname(getwd())
     }
   }
-  if(!length(pkg_dir)){
+  if (!length(pkg_dir)) {
     warning("Failed to find package source directory from: ", getwd())
     return(invisible())
   }
   results <- spell_check_package(pkg_dir, vignettes = vignettes)
-  if(nrow(results)){
-    if(isTRUE(error)){
+  if (nrow(results)) {
+    if (isTRUE(error)) {
       output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
       stop(output, call. = FALSE)
     } else {
@@ -213,8 +215,8 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
 update_description <- function(pkg, lang = NULL){
   desc <- normalizePath(file.path(pkg$path, "DESCRIPTION"), mustWork = TRUE)
   lines <- readLines(desc, warn = FALSE)
-  if(!any(grepl("spelling", c(pkg$package, pkg$suggests, pkg$imports, pkg$depends)))){
-    lines <- if(!any(grepl("^Suggests", lines))){
+  if (!any(grepl("spelling", c(pkg$package, pkg$suggests, pkg$imports, pkg$depends)))) {
+    lines <- if (!any(grepl("^Suggests", lines))) {
       c(lines, "Suggests:\n    spelling")
     } else {
       sub("^Suggests:", "Suggests:\n    spelling,", lines)
@@ -222,7 +224,7 @@ update_description <- function(pkg, lang = NULL){
   }
   is_lang <- grepl("^Language:", lines, ignore.case = TRUE)
   isolang <- gsub("_", "-", lang, fixed = TRUE)
-  if(any(is_lang)){
+  if (any(is_lang)) {
     is_lang <- which(grepl("^Language:", lines))
     lines[is_lang] <- paste("Language:", isolang)
   } else {
