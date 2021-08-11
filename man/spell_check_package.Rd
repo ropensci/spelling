@@ -33,7 +33,7 @@ Parses and checks R manual pages, rmd/rnw vignettes, and text fields in the
 package \code{DESCRIPTION} file.
 
 The preferred spelling language (typically \code{en-GB} or \code{en-US}) should be specified
-in the \code{Language} field from your package \code{DESCRIPTION}. To whitelist custom words
+in the \code{Language} field from your package \code{DESCRIPTION}. To allow custom words,
 use the package \link[=get_wordlist]{WORDLIST} file which will be added to the dictionary
 when spell checking. See \link{update_wordlist} to automatically populate and update this
 file.
