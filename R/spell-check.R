@@ -6,7 +6,7 @@
 #' package `DESCRIPTION` file.
 #'
 #' The preferred spelling language (typically `en-GB` or `en-US`) should be specified
-#' in the `Language` field from your package `DESCRIPTION`. To whitelist custom words
+#' in the `Language` field from your package `DESCRIPTION`. To allow custom words,
 #' use the package [WORDLIST][get_wordlist] file which will be added to the dictionary
 #' when spell checking. See [update_wordlist] to automatically populate and update this
 #' file.
