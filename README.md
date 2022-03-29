@@ -105,3 +105,13 @@ R CMD check V8_1.5.9000.tar.gz
 #   Running ‘testthat.R’
 #  OK
 ```
+
+## Ignore sections of text while spell checking
+
+### Markdown files
+
+Adding `<!-- spell-check: no -->` to a line will ignore the line when spell checking.
+To ignore a section of text, place a line containing only `<!-- spell-check: no:start -->` before the section,
+and a line containing only `<!-- spell-check: no:end -->` after the section.
+You must use the tag as mentioned here.
+Slightly different versions (e.g. with more spaces) will be ignored.
