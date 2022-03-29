@@ -23,5 +23,5 @@ Imports:
   knitr
 Suggests: pdftools 
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.99.9001
+RoxygenNote: 7.1.2
 Language: en-GB
