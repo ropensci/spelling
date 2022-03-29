@@ -35,6 +35,10 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
   
   # Strip bookdown text references, see: https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references
   values <- gsub("\\(ref:.*?\\)", "", values)
+  # Strip stand-alone math formulas
+  values <- gsub("\\$\\$.*?\\$\\$", "", values)
+  # Strip inline math formulas
+  values <- gsub("\\$.*?\\$", "", values)
 
   data.frame(
     text = values,
