@@ -16,11 +16,18 @@
 #' @export
 #' @param confirm show changes and ask confirmation before adding new words to the list
 #' @inheritParams spell_check_package
-update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
+update_wordlist <- function(
+    pkg = ".", vignettes = TRUE, confirm = TRUE, inst = FALSE
+) {
   pkg <- as_package(pkg)
   wordfile <- get_wordfile(pkg$path)
   old_words <- sort(get_wordlist(pkg$path), method = "radix")
-  new_words <- sort(spell_check_package(pkg$path, vignettes = vignettes, use_wordlist = FALSE)$word, method = "radix")
+  new_words <- sort(
+    spell_check_package(
+      pkg$path, vignettes = vignettes, inst = inst, use_wordlist = FALSE
+    )$word,
+    method = "radix"
+  )
   if(isTRUE(all.equal(old_words, new_words))){
     cat(sprintf("No changes required to %s\n", wordfile))
   } else {

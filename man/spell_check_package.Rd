@@ -7,7 +7,12 @@
 \alias{spell_check_test}
 \title{Package Spell Checking}
 \usage{
-spell_check_package(pkg = ".", vignettes = TRUE, use_wordlist = TRUE)
+spell_check_package(
+  pkg = ".",
+  vignettes = TRUE,
+  use_wordlist = TRUE,
+  inst = FALSE
+)
 
 spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE)
 }
@@ -19,8 +24,10 @@ spell_check_setup(pkg = ".", vignettes = TRUE, lang = "en-US", error = FALSE)
 
 \item{use_wordlist}{ignore words in the package \link[=get_wordlist]{WORDLIST} file}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
+\item{inst}{check all \code{rmd} and \code{rnw} files in the \code{inst} folder.
 For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
+
+\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
 
 \item{error}{should \verb{CMD check} fail if spelling errors are found?
 Default only prints results.}

@@ -6,7 +6,7 @@
 \alias{get_wordlist}
 \title{The WORDLIST file}
 \usage{
-update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE)
+update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE, inst = FALSE)
 
 get_wordlist(pkg = ".")
 }
@@ -17,6 +17,9 @@ get_wordlist(pkg = ".")
 \code{readme.md}) and package \code{vignettes} folder.}
 
 \item{confirm}{show changes and ask confirmation before adding new words to the list}
+
+\item{inst}{check all \code{rmd} and \code{rnw} files in the \code{inst} folder.
+For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
 }
 \description{
 The package wordlist file is used to allow custom words which will be added to the

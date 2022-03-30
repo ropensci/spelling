@@ -31,8 +31,11 @@
 #' `readme.md`) and package `vignettes` folder.
 #' @param use_wordlist ignore words in the package [WORDLIST][get_wordlist] file
 #' @param lang set `Language` field in `DESCRIPTION` e.g. `"en-US"` or `"en-GB"`.
+#' @param inst check all `rmd` and `rnw` files in the `inst` folder.
 #' For supporting other languages, see the [hunspell vignette](https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries).
-spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE){
+spell_check_package <- function(
+    pkg = ".", vignettes = TRUE, use_wordlist = TRUE, inst = FALSE
+) {
   # Get package info
   pkg <- as_package(pkg)
 
@@ -84,6 +87,30 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
     # Sweave vignettes
     rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
     rnw_lines <- lapply(sort(rnw_files), spell_check_file_knitr, format = "latex", dict = dict)
+
+    # Combine
+    all_sources <- c(all_sources, md_files, rnw_files)
+    all_lines <- c(all_lines, md_lines, rnw_lines)
+  }
+  if (isTRUE(inst)) {
+    # Where to check for rmd/md files
+    inst_files <- list.files(
+      file.path(pkg$path, "inst"), pattern = "\\.r?md$", ignore.case = TRUE,
+      full.names = TRUE, recursive = TRUE
+    )
+
+    # Markdown vignettes
+    md_files <- normalizePath(inst_files)
+    md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
+
+    # Sweave vignettes
+    rnw_files <- list.files(
+      file.path(pkg$path, "inst"), pattern = "\\.[rs]nw$", ignore.case = TRUE,
+      full.names = TRUE, recursive = TRUE
+    )
+    rnw_lines <- lapply(
+      sort(rnw_files), spell_check_file_knitr, format = "latex", dict = dict
+    )
 
     # Combine
     all_sources <- c(all_sources, md_files, rnw_files)
