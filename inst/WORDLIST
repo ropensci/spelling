@@ -1,6 +1,7 @@
 AppVeyor
 CMD
 RStudio
+Rmarkdown
 devtools
 hunspell
 pkg
