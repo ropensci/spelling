@@ -4,12 +4,15 @@
 \alias{spell_check_project}
 \title{Spell checking of a project with markdown files}
 \usage{
-spell_check_project(root = ".", lang = "en_US")
+spell_check_project(root = ".", lang)
 }
 \arguments{
 \item{root}{path to the project root.}
 
-\item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.}
+\item{lang}{default language to use for spell checking.
+When omitted it refers to language used during the last time the project was
+spell checked.
+The fall-back language is \code{en-US}.}
 }
 \description{
 Detect all Rmarkdown and markdown files recursively from the project root.
