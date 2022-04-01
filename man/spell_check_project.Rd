@@ -12,7 +12,9 @@ spell_check_project(root = ".", lang)
 \item{lang}{default language to use for spell checking.
 When omitted it refers to language used during the last time the project was
 spell checked.
-The fall-back language is \code{en-US}.}
+The fall-back language is \code{en-US}.
+WARNING: setting \code{lang} will remove any existing changes stored by
+\code{change_language()}}
 }
 \description{
 Detect all Rmarkdown and markdown files recursively from the project root.
