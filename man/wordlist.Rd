@@ -3,20 +3,32 @@
 \name{wordlist}
 \alias{wordlist}
 \alias{update_wordlist}
+\alias{update_wordlist.character}
+\alias{update_wordlist.package}
 \alias{get_wordlist}
+\alias{get_wordlist.character}
+\alias{get_wordlist.pkg}
 \title{The WORDLIST file}
 \usage{
-update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE, inst = FALSE)
+update_wordlist(pkg = ".", ...)
+
+\method{update_wordlist}{character}(pkg = ".", ..., confirm = TRUE)
+
+\method{update_wordlist}{package}(pkg = ".", vignettes = TRUE, confirm = TRUE, inst = FALSE, ...)
 
 get_wordlist(pkg = ".")
+
+\method{get_wordlist}{character}(pkg = ".")
+
+\method{get_wordlist}{pkg}(pkg = ".")
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
 
+\item{confirm}{show changes and ask confirmation before adding new words to the list}
+
 \item{vignettes}{check all \code{rmd} and \code{rnw} files in the pkg root directory (e.g.
 \code{readme.md}) and package \code{vignettes} folder.}
-
-\item{confirm}{show changes and ask confirmation before adding new words to the list}
 
 \item{inst}{check all \code{rmd} and \code{rnw} files in the \code{inst} folder.
 For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
