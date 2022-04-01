@@ -4,7 +4,9 @@ Version: 2.2.1
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut"),
       comment = c(ORCID = "0000-0002-4035-0289")),
-    person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
+    person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"),
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0001-8804-4216")))
 Description: Spell checking common document formats including latex, markdown, manual pages,
     and description files. Includes utilities to automate checking of documentation and 
     vignettes as a unit test during 'R CMD check'. Both British and American English are 
@@ -12,7 +14,6 @@ Description: Spell checking common document formats including latex, markdown, m
     define a 'wordlist' to allow custom terminology without having to abuse punctuation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 URL: https://docs.ropensci.org/spelling/ (website) 
     https://github.com/ropensci/spelling (devel)
 BugReports: https://github.com/ropensci/spelling/issues
