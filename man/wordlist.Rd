@@ -7,7 +7,7 @@
 \alias{update_wordlist.package}
 \alias{get_wordlist}
 \alias{get_wordlist.character}
-\alias{get_wordlist.pkg}
+\alias{get_wordlist.package}
 \title{The WORDLIST file}
 \usage{
 update_wordlist(pkg = ".", ...)
@@ -20,10 +20,12 @@ get_wordlist(pkg = ".")
 
 \method{get_wordlist}{character}(pkg = ".")
 
-\method{get_wordlist}{pkg}(pkg = ".")
+\method{get_wordlist}{package}(pkg = ".")
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}
+
+\item{...}{parameters passed to the different methods.}
 
 \item{confirm}{show changes and ask confirmation before adding new words to the list}
 

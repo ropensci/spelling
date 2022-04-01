@@ -10,6 +10,7 @@
 #' removes words from the wordlist that no longer appear as spelling errors, either because
 #' they have been removed from the documentation or added to the `lang` dictionary.
 #'
+#' @param ... parameters passed to the different methods.
 #' @rdname wordlist
 #' @name wordlist
 #' @family spelling
@@ -36,7 +37,7 @@ update_wordlist.character <- function(pkg = ".", ..., confirm = TRUE) {
   new_names[new_names == "default"] <- settings$default
   new_words <- vapply(
     new_names, FUN.VALUE = vector(mode = "list", length = 1),
-    new_words = spell_check_project(root = pkg),
+    new_words = spell_check_project(root = pkg, lang = "update"),
     FUN = function(x, new_words) {
       issues <- new_words$word[new_words$lang == x]
       if (length(issues) == 0) {
@@ -52,6 +53,7 @@ update_wordlist.character <- function(pkg = ".", ..., confirm = TRUE) {
   }
   wordfile <- get_wordfile(pkg)
   for (i in names(wordfile)) {
+    all.equal(old_words[[i]], new_words[[i]])
     if (identical(old_words[[i]], new_words[[i]])) {
       next
     }
@@ -165,7 +167,7 @@ get_wordlist.character <- function(pkg = ".") {
 
 #' @rdname wordlist
 #' @export
-get_wordlist.pkg <- function(pkg = ".") {
+get_wordlist.package <- function(pkg = ".") {
   wordfile <- get_wordfile(pkg$path)
   out <- if(file.exists(wordfile))
     unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
@@ -177,7 +179,7 @@ get_wordfile <- function(path) {
   if (!file_test("-f", file.path(path, "spell_check.json"))) {
     return(normalizePath(file.path(path, "inst", "WORDLIST"), mustWork = FALSE))
   }
-  settings <- parse_settings(root = pkg)
+  settings <- parse_settings(root = path)
   extra_lang <- vapply(
     names(settings)[!names(settings) %in% c("default", "ignore")],
     FUN = normalize_lang, FUN.VALUE = character(1)

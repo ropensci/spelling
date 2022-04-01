@@ -13,11 +13,18 @@
 #' `change_language()`
 #'
 #' @export
+#' @importFrom stats setNames
 #' @importFrom utils file_test
 spell_check_project <- function(root = ".", lang) {
   stopifnot("root is not a string" = is.character(root) && length(root) == 1)
   stopifnot("root is not an existing directory" = file_test("-d", root))
   settings <- parse_settings(root = root, lang = lang)
+  if (!missing(lang) && identical(lang, "update")) {
+    wordlist <- rep(list(character(0)), length(settings))
+    names(wordlist) <- names(settings)
+  } else {
+    wordlist <- get_wordlist(pkg = root)
+  }
 
   files <- list.files(
     root, pattern = "\\.r?md$", ignore.case = TRUE, recursive = TRUE,
@@ -49,15 +56,19 @@ spell_check_project <- function(root = ".", lang) {
     relevant <- apply(relevant, 1, any)
     to_check <- files[relevant]
     files <- files[!relevant]
-    problems <- spell_check_files(
-      path = file.path(root, to_check), lang = names(settings[i])
-    )
-    problems$lang <- rep(names(settings[i]), nrow(problems))
-    results[names(settings[i])] <- list(problems)
+    if (length(to_check)) {
+      problems <- spell_check_files(
+        path = file.path(root, to_check), lang = names(settings[i]),
+        ignore = wordlist[[names(settings[i])]]
+      )
+      problems$lang <- rep(names(settings[i]), nrow(problems))
+      results[names(settings[i])] <- list(problems)
+    }
   }
   # handle remaining files with the default language
   problems <- spell_check_files(
-    path = file.path(root, files), lang = settings$default
+    path = file.path(root, files), lang = settings$default,
+    ignore = wordlist[["default"]]
   )
   problems$lang <- rep(settings[["default"]], nrow(problems))
   results["default"] <- list(problems)
@@ -68,9 +79,11 @@ parse_settings <- function(root, lang) {
   settings_file <- file.path(root, "spell_check.json")
   if (!missing(lang)) {
     stopifnot("lang is not a string" = is.character(lang) && length(lang) == 1)
-    settings <- list(default = lang)
-    write_settings(settings = settings, root = root)
-    return(settings)
+    if (lang != "update") {
+      settings <- list(default = lang)
+      write_settings(settings = settings, root = root)
+      return(settings)
+    }
   }
   if (!file_test("-f", settings_file)) {
     settings <- list(default = "en-US")
