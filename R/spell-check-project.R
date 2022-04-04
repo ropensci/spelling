@@ -42,7 +42,14 @@ spell_check_project <- function(root = ".", lang) {
   files <- c(rmd, md[!overlap])
 
   # ignore files listed to be ignored
-  files <- files[!files %in% settings[["ignore"]]]
+  relevant <- vapply(
+    paste0("^", settings[["ignore"]]), FUN.VALUE = logical(length(files)),
+    files = files, FUN = function(x, files) {
+      grepl(x, files)
+    }
+  )
+  relevant <- apply(relevant, 1, any)
+  files <- files[!relevant]
   settings <- settings[names(settings) != "ignore"]
   # handle files with a non-default language
   results <- list()
