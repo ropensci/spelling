@@ -18,6 +18,7 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
     yaml_fields <- paste(yaml_fields, collapse = "|")
     has_field <- grepl(paste0("^\\s*(",yaml_fields, ")"), parts$front_matter, ignore.case = TRUE)
     text[which(!has_field)] <- ""
+    text[which(has_field)] <- gsub(paste0("^\\s*(",yaml_fields, "):"), "", text[which(has_field)])
   }
 
   # ignore lines containing <!-- no-spell-check -->
