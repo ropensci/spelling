@@ -71,7 +71,7 @@ update_wordlist.character <- function(pkg = ".", ..., confirm = TRUE) {
       message(
         sprintf(
           "The following words will be removed the %s wordlist:\n%s\n",
-          i, paste(" -", words_added, collapse = "\n")
+          i, paste(" -", words_removed, collapse = "\n")
         )
       )
     }
