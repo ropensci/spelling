@@ -44,27 +44,17 @@ spell_check_project <- function(root = ".", lang) {
   files <- c(rmd, md[!overlap])
 
   # ignore files listed to be ignored
-  relevant <- vapply(
-    paste0("^", file.path(root, settings[["ignore"]])),
-    FUN.VALUE = logical(length(files)),
-    files = files, FUN = function(x, files) {
-      grepl(x, files)
-    }
+  relevant <- select_files(
+    root = root, files = files, settings = settings, lang = "ignore"
   )
-  relevant <- apply(relevant, 1, any)
   files <- files[!relevant]
   settings <- settings[names(settings) != "ignore"]
   # handle files with a non-default language
   results <- list()
   for (i in tail(seq_along(settings), -1)) {
-    relevant <- vapply(
-      paste0("^", file.path(root, settings[[i]])),
-      FUN.VALUE = logical(length(files)),
-      files = files, FUN = function(x, files) {
-        grepl(x, files)
-      }
+    relevant <- select_files(
+      root = root, files = files, settings = settings, lang = names(settings[i])
     )
-    relevant <- apply(relevant, 1, any)
     to_check <- files[relevant]
     files <- files[!relevant]
     if (length(to_check)) {
@@ -86,18 +76,46 @@ spell_check_project <- function(root = ".", lang) {
   do.call(rbind, results)
 }
 
+select_files <- function(root, files, settings, lang) {
+  if (lang != "default") {
+    relevant <- vapply(
+      paste0("^", file.path(root, settings[[lang]])),
+      FUN.VALUE = logical(length(files)),
+      files = files, FUN = function(x, files) {
+        grepl(x, files)
+      }
+    )
+    return(apply(relevant, 1, any))
+  }
+  relevant <- vapply(
+    tail(names(settings), -1), FUN = select_files,
+    FUN.VALUE = logical(length(files)), root = root, files = files,
+    settings = settings
+  )
+  !apply(relevant, 1, any)
+}
+
+#' @importFrom utils file_test
 parse_settings <- function(root, lang) {
   settings_file <- file.path(root, "spell_check.json")
+  pkg_lang <- ifelse(
+    file_test("-f", file.path(root, "DESCRIPTION")),
+    normalize_lang(as_package(root)$language),
+    NA
+  )
+
   if (!missing(lang)) {
     stopifnot("lang is not a string" = is.character(lang) && length(lang) == 1)
     if (lang != "update") {
       settings <- list(default = lang)
-      write_settings(settings = settings, root = root)
+      if (is.na(pkg_lang)) {
+        write_settings(settings = settings, root = root)
+      }
       return(settings)
     }
   }
   if (!file_test("-f", settings_file)) {
-    settings <- list(default = "en-US")
+    settings <- list(default = ifelse(is.na(pkg_lang), "en_US", pkg_lang))
     write_settings(settings = settings, root = root)
     return(settings)
   }
@@ -105,6 +123,11 @@ parse_settings <- function(root, lang) {
   settings <- list(
     default = gsub(".*\"default\": \\[\"(.*?)\"\\].*", "\\1", raw_settings)
   )
+  # handle change in package language
+  if (!is.na(pkg_lang) && settings$default != pkg_lang) {
+    file.remove(file_test("-f", settings_file))
+    return(list(default = pkg_lang))
+  }
   raw_settings <- gsub(".*\"default\": \\[\".*?\"\\]", "", raw_settings)
   while (grepl("\"(.*?)\": \\[(.*?)\\]", raw_settings)) {
     next_lang <- gsub(".*\"(.*?)\": \\[(.*?)\\].*", "\\1", raw_settings)
@@ -133,7 +156,23 @@ format_setting <- function(lang, settings) {
   )
 }
 
+#' @importFrom utils file_test
 write_settings <- function(settings, root) {
+  # add spell_check.json to .Rbuildignore
+  if (file_test("-f", file.path(root, "DESCRIPTION"))) {
+    if (file_test("-f", file.path(root, ".Rbuildignore"))) {
+      r_build_ignore <- readLines(file.path(root, ".Rbuildignore"))
+      if (!"spell_check.json" %in% r_build_ignore) {
+        writeLines(
+          c(r_build_ignore, "spell_check.json"),
+          file.path(root, ".Rbuildignore")
+        )
+      }
+    } else {
+      writeLines("spell_check.json", file.path(root, ".Rbuildignore"))
+    }
+  }
+  # write spell_check.json
   content <- vapply(
     names(settings), FUN = format_setting, FUN.VALUE = character(1),
     settings = settings
@@ -156,6 +195,7 @@ write_settings <- function(settings, root) {
 change_language <- function(root, path, lang) {
   stopifnot("lang is not a string" = is.character(lang) && length(lang) == 1)
   stopifnot("lang" = lang != "default")
+  lang <- normalize_lang(lang = lang)
   stopifnot("root is not a string" = is.character(root) && length(root) == 1)
   stopifnot("root is not a directory" = file_test("-d", root))
   stopifnot("path is not a string" = is.character(path) && length(path) == 1)

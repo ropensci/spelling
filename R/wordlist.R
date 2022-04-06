@@ -145,7 +145,10 @@ get_wordlist <- function(pkg = ".") {
 get_wordlist.character <- function(pkg = ".") {
   stopifnot("pkg is not a string" = is.character(pkg) && length(pkg) == 1)
   stopifnot("pkg is not an existing directory" = file_test("-d", pkg))
-  if (file_test("-f", file.path(pkg, "DESCRIPTION"))) {
+  if (
+    file_test("-f", file.path(pkg, "DESCRIPTION")) &&
+    !file_test("-f", file.path(pkg, "spell_check.json"))
+  ) {
     return(get_wordlist(as_package(pkg)))
   }
   wordfile <- get_wordfile(path = pkg)
@@ -167,7 +170,7 @@ get_wordlist.character <- function(pkg = ".") {
 
 #' @rdname wordlist
 #' @export
-get_wordlist.package <- function(pkg = ".") {
+get_wordlist.package <- function(pkg) {
   wordfile <- get_wordfile(pkg$path)
   out <- if(file.exists(wordfile))
     unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))

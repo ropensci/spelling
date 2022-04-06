@@ -20,7 +20,7 @@ get_wordlist(pkg = ".")
 
 \method{get_wordlist}{character}(pkg = ".")
 
-\method{get_wordlist}{package}(pkg = ".")
+\method{get_wordlist}{package}(pkg)
 }
 \arguments{
 \item{pkg}{path to package root directory containing the \code{DESCRIPTION} file}

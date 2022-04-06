@@ -39,54 +39,113 @@ spell_check_package <- function(
   # Get package info
   pkg <- as_package(pkg)
 
-  # Get language from DESCRIPTION
-  lang <- normalize_lang(pkg$language)
-
-  # Add custom words to the ignore list
-  add_words <- if(isTRUE(use_wordlist))
-    get_wordlist(pkg$path)
-  author <- if(length(pkg[['authors@r']])){
+  author <- if (length(pkg[['authors@r']])) {
     parse_r_field(pkg[['authors@r']])
   } else {
     strsplit(pkg[['author']], " ", fixed = TRUE)[[1]]
   }
-  ignore <- unique(c(pkg$package, author, hunspell::en_stats, add_words))
+  ignore <- unique(c(pkg$package, author, hunspell::en_stats))
+  wordlist <- if (use_wordlist) {
+    get_wordlist(pkg = pkg$path)
+  }
+
+  settings <- parse_settings(root = pkg$path)
+  result <- vapply(
+    names(settings), FUN = spell_check_package_lang,
+    FUN.VALUE = vector(mode = "list", length = 1), pkg = pkg, ignore = ignore,
+    vignettes = vignettes, wordlist = wordlist, inst = inst,
+    settings = settings
+  )
+  do.call(rbind, result)
+}
+
+#' @importFrom hunspell dictionary
+#' @importFrom tools loadPkgRdMacros loadRdMacros
+spell_check_package_lang <- function(
+  pkg, lang, ignore = character(0), vignettes = TRUE, wordlist, inst = FALSE,
+  settings
+) {
+  if (lang == "ignore") {
+    return(list())
+  }
+  if (!missing(wordlist)) {
+    if (is.list(wordlist)) {
+      ignore <- c(ignore, wordlist[[lang]])
+    } else {
+      ignore <- c(ignore, wordlist)
+    }
+  }
 
   # Create the hunspell dictionary object
-  dict <- hunspell::dictionary(lang, add_words = sort(ignore))
+  dict <- dictionary(
+    ifelse(lang == "default", settings$default, lang), add_words = sort(ignore)
+  )
 
   # Check Rd manual files
-  rd_files <- sort(list.files(file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE))
-  macros <- tools::loadRdMacros(
-    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-    tools::loadPkgRdMacros(pkg$path, macros = NULL)
+  rd_files <- sort(list.files(
+    file.path(pkg$path, "man"), "\\.rd$", ignore.case = TRUE, full.names = TRUE)
   )
-  rd_lines <- lapply(rd_files, spell_check_file_rd, dict = dict, macros = macros)
+  macros <- loadRdMacros(
+    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
+    loadPkgRdMacros(pkg$path, macros = NULL)
+  )
+  relevant <- select_files(
+    root = pkg$path, files = rd_files, settings = settings, lang = lang
+  )
+  rd_files <- rd_files[relevant]
+  rd_lines <- lapply(
+    rd_files, spell_check_file_rd, dict = dict, macros = macros
+  )
 
   # Check 'DESCRIPTION' fields
-  pkg_fields <- c("title", "description")
-  pkg_lines <- lapply(pkg_fields, function(x){
-    spell_check_description_text(textConnection(pkg[[x]]), dict = dict)
-  })
+  if (lang == "default") {
+    pkg_fields <- c("title", "description")
+    pkg_lines <- lapply(pkg_fields, function(x){
+      spell_check_description_text(textConnection(pkg[[x]]), dict = dict)
+    })
+  } else {
+    pkg_fields <- character(0)
+    pkg_lines <- list()
+  }
 
   # Combine
   all_sources <- c(rd_files, pkg_fields)
   all_lines <- c(rd_lines, pkg_lines)
 
-  if(isTRUE(vignettes)){
+  if (isTRUE(vignettes)) {
     # Where to check for rmd/md files
-    vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
-                             ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
-    root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?md",
-                             ignore.case = TRUE, full.names = TRUE)
+    vign_files <- list.files(
+      file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
+      ignore.case = TRUE, full.names = TRUE, recursive = TRUE
+    )
+    root_files <- list.files(
+      pkg$path, pattern = "(readme|news|changes|index).r?md",
+      ignore.case = TRUE, full.names = TRUE
+    )
 
     # Markdown vignettes
     md_files <- normalizePath(c(root_files, vign_files))
-    md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
+    relevant <- select_files(
+      root = pkg$path, files = md_files, settings = settings, lang = lang
+    )
+    md_files <- md_files[relevant]
+    md_lines <- lapply(
+      sort(md_files), spell_check_file_md, dict = dict
+    )
 
     # Sweave vignettes
-    rnw_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$", ignore.case = TRUE, full.names = TRUE)
-    rnw_lines <- lapply(sort(rnw_files), spell_check_file_knitr, format = "latex", dict = dict)
+    rnw_files <- list.files(
+      file.path(pkg$path, "vignettes"), pattern = "\\.[rs]nw$",
+      ignore.case = TRUE, full.names = TRUE
+    )
+    relevant <- select_files(
+      root = pkg$path, files = rnw_files, settings = settings, lang = lang
+    )
+    rnw_files <- rnw_files[relevant]
+    rnw_lines <- lapply(
+      sort(rnw_files), spell_check_file_knitr, format = "latex",
+      dict = dict
+    )
 
     # Combine
     all_sources <- c(all_sources, md_files, rnw_files)
@@ -101,6 +160,10 @@ spell_check_package <- function(
 
     # Markdown vignettes
     md_files <- normalizePath(inst_files)
+    relevant <- select_files(
+      root = pkg$path, files = md_files, settings = settings, lang = lang
+    )
+    md_files <- md_files[relevant]
     md_lines <- lapply(sort(md_files), spell_check_file_md, dict = dict)
 
     # Sweave vignettes
@@ -108,6 +171,10 @@ spell_check_package <- function(
       file.path(pkg$path, "inst"), pattern = "\\.[rs]nw$", ignore.case = TRUE,
       full.names = TRUE, recursive = TRUE
     )
+    relevant <- select_files(
+      root = pkg$path, files = rnw_files, settings = settings, lang = lang
+    )
+    rnw_files <- rnw_files[relevant]
     rnw_lines <- lapply(
       sort(rnw_files), spell_check_file_knitr, format = "latex", dict = dict
     )
@@ -116,7 +183,11 @@ spell_check_package <- function(
     all_sources <- c(all_sources, md_files, rnw_files)
     all_lines <- c(all_lines, md_lines, rnw_lines)
   }
-  summarize_words(all_sources, all_lines)
+  problems <- summarize_words(all_sources, all_lines)
+  problems$lang <- rep(
+    ifelse(lang == "default", settings$default, lang), nrow(problems)
+  )
+  list(problems)
 }
 
 as_package <- function(pkg){
