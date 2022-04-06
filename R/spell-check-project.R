@@ -18,6 +18,7 @@
 spell_check_project <- function(root = ".", lang) {
   stopifnot("root is not a string" = is.character(root) && length(root) == 1)
   stopifnot("root is not an existing directory" = file_test("-d", root))
+  root <- normalizePath(root)
   settings <- parse_settings(root = root, lang = lang)
   if (!missing(lang) && identical(lang, "update")) {
     wordlist <- rep(list(character(0)), length(settings))
@@ -28,12 +29,13 @@ spell_check_project <- function(root = ".", lang) {
 
   files <- list.files(
     root, pattern = "\\.r?md$", ignore.case = TRUE, recursive = TRUE,
-    all.files = TRUE
+    all.files = TRUE, full.names = TRUE
   )
-  files <- normalizePath(files, winslash = "/", mustWork = FALSE)
 
   # ignore vignettes stored by the renv package
-  files <- files[!grepl(file.path("renv", "library"), files, ignore.case = TRUE)]
+  files <- files[
+    !grepl(file.path("renv", "library"), files, ignore.case = TRUE)
+  ]
   # ignore md files when an Rmd with the same name exists.
   md <- files[grepl("\\.md$", files, ignore.case = TRUE)]
   rmd <- files[grepl("\\.rmd$", files, ignore.case = TRUE)]
@@ -43,7 +45,8 @@ spell_check_project <- function(root = ".", lang) {
 
   # ignore files listed to be ignored
   relevant <- vapply(
-    paste0("^", settings[["ignore"]]), FUN.VALUE = logical(length(files)),
+    paste0("^", file.path(root, settings[["ignore"]])),
+    FUN.VALUE = logical(length(files)),
     files = files, FUN = function(x, files) {
       grepl(x, files)
     }
@@ -55,7 +58,8 @@ spell_check_project <- function(root = ".", lang) {
   results <- list()
   for (i in tail(seq_along(settings), -1)) {
     relevant <- vapply(
-      paste0("^", settings[[i]]), FUN.VALUE = logical(length(files)),
+      paste0("^", file.path(root, settings[[i]])),
+      FUN.VALUE = logical(length(files)),
       files = files, FUN = function(x, files) {
         grepl(x, files)
       }
@@ -65,7 +69,7 @@ spell_check_project <- function(root = ".", lang) {
     files <- files[!relevant]
     if (length(to_check)) {
       problems <- spell_check_files(
-        path = file.path(root, to_check), lang = names(settings[i]),
+        path = to_check, lang = names(settings[i]),
         ignore = wordlist[[names(settings[i])]]
       )
       problems$lang <- rep(names(settings[i]), nrow(problems))
@@ -74,7 +78,7 @@ spell_check_project <- function(root = ".", lang) {
   }
   # handle remaining files with the default language
   problems <- spell_check_files(
-    path = file.path(root, files), lang = settings$default,
+    path = files, lang = settings$default,
     ignore = wordlist[["default"]]
   )
   problems$lang <- rep(settings[["default"]], nrow(problems))
@@ -155,7 +159,9 @@ change_language <- function(root, path, lang) {
   stopifnot("root is not a string" = is.character(root) && length(root) == 1)
   stopifnot("root is not a directory" = file_test("-d", root))
   stopifnot("path is not a string" = is.character(path) && length(path) == 1)
-  path <- normalizePath(path, winslash = "/", mustWork = FALSE)
+  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  path <- normalizePath(file.path(root, path), winslash = "/", mustWork = FALSE)
+  path <- gsub(paste0(root, "/"), "", path)
   stopifnot(
     "path is neither a file or a directory in root" =
       file_test("-f", file.path(root, path)) ||
