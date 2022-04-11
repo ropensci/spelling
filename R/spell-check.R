@@ -234,7 +234,17 @@ print.summary_spellcheck <- function(x, ...){
   fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
   pretty_names <- sprintf(fmt, words)
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
+  current_lang <- x$lang[1]
+  cat(rep("-", getOption("width", 80)), "\n", sep = "")
+  cat(current_lang, "\n", sep = "")
+  cat(rep("-", getOption("width", 80)), "\n", sep = "")
   for(i in seq_len(nrow(x))){
+    if (x$lang[i] != current_lang) {
+      current_lang <- x$lang[i]
+      cat(rep("-", getOption("width", 80)), "\n", sep = "")
+      cat(current_lang, "\n", sep = "")
+      cat(rep("-", getOption("width", 80)), "\n", sep = "")
+    }
     cat(pretty_names[i])
     cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
     cat("\n")
