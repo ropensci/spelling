@@ -43,36 +43,23 @@ spell_check_project <- function(root = ".", lang) {
     gsub("\\.rmd$", "", rmd, ignore.case = TRUE)
   files <- c(rmd, md[!overlap])
 
-  # ignore files listed to be ignored
-  relevant <- select_files(
-    root = root, files = files, settings = settings, lang = "ignore"
-  )
-  files <- files[!relevant]
-  settings <- settings[names(settings) != "ignore"]
-  # handle files with a non-default language
-  results <- list()
-  for (i in tail(seq_along(settings), -1)) {
-    relevant <- select_files(
-      root = root, files = files, settings = settings, lang = names(settings[i])
-    )
-    to_check <- files[relevant]
-    files <- files[!relevant]
-    if (length(to_check)) {
-      problems <- spell_check_files(
-        path = to_check, lang = names(settings[i]),
-        ignore = wordlist[[names(settings[i])]]
+  results <- vapply(
+    names(settings)[names(settings) != "ignore"],
+    FUN.VALUE = vector(mode = "list", length = 1), settings = settings,
+    function(i, settings) {
+      relevant <- select_files(
+        root = root, files = files, settings = settings, lang = i
       )
-      problems$lang <- rep(names(settings[i]), nrow(problems))
-      results[names(settings[i])] <- list(problems)
+      problems <- spell_check_files(
+        path = files[relevant], ignore = wordlist[[i]],
+        lang = ifelse(i == "default", settings$default, i)
+      )
+      problems$lang <- rep(
+        ifelse(i == "default", settings$default, i), nrow(problems)
+      )
+      return(list(problems))
     }
-  }
-  # handle remaining files with the default language
-  problems <- spell_check_files(
-    path = files, lang = settings$default,
-    ignore = wordlist[["default"]]
   )
-  problems$lang <- rep(settings[["default"]], nrow(problems))
-  results["default"] <- list(problems)
   do.call(rbind, results)
 }
 
@@ -86,6 +73,9 @@ select_files <- function(root, files, settings, lang) {
       }
     )
     return(apply(relevant, 1, any))
+  }
+  if (length(settings) == 1) {
+    return(rep(TRUE, length(files)))
   }
   relevant <- vapply(
     tail(names(settings), -1), FUN = select_files,
@@ -116,7 +106,9 @@ parse_settings <- function(root, lang) {
   }
   if (!file_test("-f", settings_file)) {
     settings <- list(default = ifelse(is.na(pkg_lang), "en_US", pkg_lang))
-    write_settings(settings = settings, root = root)
+    if (is.na(pkg_lang)) {
+      write_settings(settings = settings, root = root)
+    }
     return(settings)
   }
   raw_settings <- paste(readLines(settings_file), collapse = "")

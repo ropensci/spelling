@@ -27,7 +27,10 @@ update_wordlist <- function(pkg = ".", ...) {
 update_wordlist.character <- function(pkg = ".", ..., confirm = TRUE) {
   stopifnot("pkg is not a string" = is.character(pkg) && length(pkg) == 1)
   stopifnot("pkg is not an existing directory" = file_test("-d", pkg))
-  if (file_test("-f", file.path(pkg, "DESCRIPTION"))) {
+  if (
+    file_test("-f", file.path(pkg, "DESCRIPTION")) &&
+    !file_test("-f", file.path(pkg, "spell_check.json"))
+  ) {
     return(update_wordlist(as_package(pkg), ...))
   }
 
@@ -35,17 +38,31 @@ update_wordlist.character <- function(pkg = ".", ..., confirm = TRUE) {
   settings <- parse_settings(root = pkg)
   new_names <- names(settings)[names(settings) != "ignore"]
   new_names[new_names == "default"] <- settings$default
-  new_words <- vapply(
-    new_names, FUN.VALUE = vector(mode = "list", length = 1),
-    new_words = spell_check_project(root = pkg, lang = "update"),
-    FUN = function(x, new_words) {
-      issues <- new_words$word[new_words$lang == x]
-      if (length(issues) == 0) {
-        return(list(character(0)))
+  if (file_test("-f", file.path(pkg, "DESCRIPTION"))) {
+    new_words <- vapply(
+      new_names, FUN.VALUE = vector(mode = "list", length = 1),
+      new_words = spell_check_package(pkg = pkg, use_wordlist = FALSE, ...),
+      FUN = function(x, new_words) {
+        issues <- new_words$word[new_words$lang == x]
+        if (length(issues) == 0) {
+          return(list(character(0)))
+        }
+        list(sort(issues, method = "radix"))
       }
-      list(sort(issues, method = "radix"))
-    }
-  )
+    )
+  } else {
+    new_words <- vapply(
+      new_names, FUN.VALUE = vector(mode = "list", length = 1),
+      new_words = spell_check_project(root = pkg, lang = "update"),
+      FUN = function(x, new_words) {
+        issues <- new_words$word[new_words$lang == x]
+        if (length(issues) == 0) {
+          return(list(character(0)))
+        }
+        list(sort(issues, method = "radix"))
+      }
+    )
+  }
   names(new_words)[names(new_words) == settings$default] <- "default"
   if (identical(old_words, new_words)) {
     message("No new words to add")
@@ -183,6 +200,13 @@ get_wordfile <- function(path) {
     return(normalizePath(file.path(path, "inst", "WORDLIST"), mustWork = FALSE))
   }
   settings <- parse_settings(root = path)
+  if (!any(!names(settings) %in% c("default", "ignore"))) {
+    wordfile <- normalizePath(
+      file.path(path, "inst", "WORDLIST"), mustWork = FALSE
+    )
+    names(wordfile) <- "default"
+    return(wordfile)
+  }
   extra_lang <- vapply(
     names(settings)[!names(settings) %in% c("default", "ignore")],
     FUN = normalize_lang, FUN.VALUE = character(1)

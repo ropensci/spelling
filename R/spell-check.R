@@ -183,11 +183,12 @@ spell_check_package_lang <- function(
     all_sources <- c(all_sources, md_files, rnw_files)
     all_lines <- c(all_lines, md_lines, rnw_lines)
   }
-  problems <- summarize_words(all_sources, all_lines)
-  problems$lang <- rep(
-    ifelse(lang == "default", settings$default, lang), nrow(problems)
+  list(
+    summarize_words(
+      all_sources, all_lines,
+      lang = ifelse(lang == "default", settings$default, lang)
+    )
   )
-  list(problems)
 }
 
 as_package <- function(pkg){
@@ -208,19 +209,17 @@ as_package <- function(pkg){
 }
 
 # Find all occurences for each word
-summarize_words <- function(file_names, found_line){
+summarize_words <- function(file_names, found_line, lang) {
   words_by_file <- lapply(found_line, names)
   bad_words <- sort(unique(unlist(words_by_file)))
-  out <- data.frame(
-    word = bad_words,
-    stringsAsFactors = FALSE
-  )
+  out <- data.frame(word = bad_words, stringsAsFactors = FALSE)
   out$found <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
       paste0(basename(file_names[i]), ":", found_line[[i]][word])
     }, character(1))
   })
+  out$lang <- rep(lang, nrow(out))
   structure(out, class = c("summary_spellcheck", "data.frame"))
 }
 
@@ -273,7 +272,10 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
 }
 
 #' @export
-spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_on_cran = TRUE){
+spell_check_test <- function(
+    vignettes = TRUE, error = FALSE, lang = NULL, skip_on_cran = TRUE,
+    inst = FALSE
+) {
   if(isTRUE(skip_on_cran)){
     not_cran <- Sys.getenv('NOT_CRAN')
     # See logic in tools:::config_val_to_logical
@@ -305,7 +307,7 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
     warning("Failed to find package source directory from: ", getwd())
     return(invisible())
   }
-  results <- spell_check_package(pkg_dir, vignettes = vignettes)
+  results <- spell_check_package(pkg_dir, vignettes = vignettes, inst = inst)
   if(nrow(results)){
     if(isTRUE(error)){
       output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
