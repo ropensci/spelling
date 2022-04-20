@@ -218,7 +218,7 @@ change_language <- function(root, path, lang) {
       settings <- vapply(
         settings, FUN.VALUE = vector(mode = "list", length = 1), path = parent,
         FUN = function(x, path) {
-          list(x[!grepl(sprintf("^%s", path), x)])
+          list(x[!grepl(sprintf("^%s$", path), x)])
         }
       )
       parent <- dirname(parent)
