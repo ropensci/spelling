@@ -50,7 +50,7 @@ spell_check_package("~/workspace/V8")
 # Yihui         JS.Rd:26
 ```
 
-Review these words and then whitelist them:
+Review these words and then update the wordlist to allow them:
 
 
 ```r
