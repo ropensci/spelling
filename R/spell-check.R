@@ -160,7 +160,7 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
   writeLines(sprintf("if(requireNamespace('spelling', quietly = TRUE))
   spelling::spell_check_test(vignettes = %s, error = %s,
                              skip_on_cran = TRUE)",
-  deparse(vignettes), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
+    deparse(vignettes), deparse(error)), file.path(pkg$path, "tests/spelling.R"))
   cat(sprintf("Updated %s\n", file.path(pkg$path, "tests/spelling.R")))
 }
 

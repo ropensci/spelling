@@ -30,34 +30,25 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
 }
 
 spell_check_file_one <- function(path, dict, ignore = character()) {
-  ext <- tolower(tools::file_ext(path))
-
-  # Recode a few file extensions
-  ext <- switch(
-    ext,
-    rmd = "md",
-    snw = "rnw",
-    htm = "html",
-    # default
-    ext
-  )
-
-  switch(
-    ext,
-    md = spell_check_file_md(path, dict = dict),
-    rnw = spell_check_file_knitr(path, format = "latex", dict = dict),
-    tex = spell_check_file_plain(path, format = "latex", dict = dict, ignore = ignore),
-    html = {
-      try({
-        path <- pre_filter_html(path)
-      })
-      spell_check_file_plain(path, format = "html", dict = dict)
-    },
-    xml = spell_check_file_plain(path, format = "xml", dict = dict, ignore = ignore),
-    pdf = spell_check_file_pdf(path, format = "text", dict = dict),
-    # default
-    spell_check_file_plain(path, format = "text", dict = dict, ignore = ignore)
-  )
+  if(grepl("\\.r?md$",path, ignore.case = TRUE))
+    return(spell_check_file_md(path, dict = dict))
+  if(grepl("\\.rd$", path, ignore.case = TRUE))
+    return(spell_check_file_rd(path, dict = dict))
+  if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
+    return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
+  if(grepl("\\.(tex)$",path, ignore.case = TRUE))
+    return(spell_check_file_plain(path = path, format = "latex", dict = dict, ignore = ignore))
+  if(grepl("\\.(html?)$", path, ignore.case = TRUE)){
+    try({
+      path <- pre_filter_html(path)
+    })
+    return(spell_check_file_plain(path = path, format = "html", dict = dict))
+  }
+  if(grepl("\\.(xml)$",path, ignore.case = TRUE))
+    return(spell_check_file_plain(path = path, format = "xml", dict = dict, ignore = ignore))
+  if(grepl("\\.(pdf)$",path, ignore.case = TRUE))
+    return(spell_check_file_pdf(path = path, format = "text", dict = dict))
+  return(spell_check_file_plain(path = path, format = "text", dict = dict, ignore = ignore))
 }
 
 #' @rdname spell_check_files
