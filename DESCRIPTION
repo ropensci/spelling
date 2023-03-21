@@ -12,7 +12,6 @@ Description: Spell checking common document formats including latex, markdown, m
     define a 'wordlist' to allow custom terminology without having to abuse punctuation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 URL: https://docs.ropensci.org/spelling/ (website) 
     https://github.com/ropensci/spelling (devel)
 BugReports: https://github.com/ropensci/spelling/issues
