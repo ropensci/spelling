@@ -1,3 +1,6 @@
+2.2.1
+  - Fix for commonmark 1.7.0 change for auto-linked markdown URLs
+
 2.2
   - WORDLIST is now sorted with a locale-independent method, which avoids large
     diffs in version control due to the fact that developpers use different
