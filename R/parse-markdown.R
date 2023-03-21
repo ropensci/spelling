@@ -23,6 +23,14 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
   md <- commonmark::markdown_xml(text, sourcepos = TRUE, extensions = extensions)
   doc <- xml2::xml_ns_strip(xml2::read_xml(md))
 
+  # Filter autolinked URLs from text nodes
+  link_nodes <- xml2::xml_find_all(doc, "//link[@destination]")
+  lapply(link_nodes, function(x){
+    dest <- xml2::xml_attr(x, 'destination')
+    node <- xml2::xml_find_first(x, "./text")
+    xml2::xml_set_text(node, sub(dest, '', xml2::xml_text(node), fixed = TRUE))
+  })
+
   # Find text nodes and their location in the markdown source doc
   sourcepos_nodes <-  xml2::xml_find_all(doc, "//*[@sourcepos][text]")
   sourcepos <- xml2::xml_attr(sourcepos_nodes, "sourcepos")
@@ -32,7 +40,7 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
 
   # Strip 'heading identifiers', see: https://pandoc.org/MANUAL.html#heading-identifiers
   values <- gsub('\\{#[^\\n]+\\}\\s*($|\\r?\\n)', '\\1', values, perl = TRUE)
-  
+
   # Strip bookdown text references, see: https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references
   values <- gsub("\\(ref:.*?\\)", "", values)
 
