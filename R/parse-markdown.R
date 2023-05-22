@@ -27,8 +27,10 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
   link_nodes <- xml2::xml_find_all(doc, "//link[@destination]")
   lapply(link_nodes, function(x){
     dest <- xml2::xml_attr(x, 'destination')
-    node <- xml2::xml_find_first(x, "./text")
-    xml2::xml_set_text(node, sub(dest, '', xml2::xml_text(node), fixed = TRUE))
+    if(nchar(dest)){
+      node <- xml2::xml_find_first(x, "./text")
+      xml2::xml_set_text(node, sub(dest, '', xml2::xml_text(node), fixed = TRUE))
+    }
   })
 
   # Find text nodes and their location in the markdown source doc
