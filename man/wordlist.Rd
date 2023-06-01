@@ -31,7 +31,8 @@ removes words from the wordlist that no longer appear as spelling errors, either
 they have been removed from the documentation or added to the \code{lang} dictionary.
 }
 \seealso{
-Other spelling: \code{\link{spell_check_files}()},
-  \code{\link{spell_check_package}()}
+Other spelling: 
+\code{\link{spell_check_files}()},
+\code{\link{spell_check_package}()}
 }
 \concept{spelling}
