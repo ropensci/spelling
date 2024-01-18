@@ -12,7 +12,7 @@ spell_check_text(text, ignore = character(), lang = "en_US")
 \arguments{
 \item{path}{path to file or to spell check}
 
-\item{ignore}{character vector with words which will be added to the \link[hunspell:dictionary]{hunspell::dictionary}}
+\item{ignore}{character vector with words which will be added to the \link[hunspell:hunspell]{hunspell::dictionary}}
 
 \item{lang}{set \code{Language} field in \code{DESCRIPTION} e.g. \code{"en-US"} or \code{"en-GB"}.
 For supporting other languages, see the \href{https://docs.ropensci.org/hunspell/articles/intro.html#hunspell-dictionaries}{hunspell vignette}.}
@@ -38,7 +38,8 @@ files <- list.files(system.file("examples", package = "knitr"),
 spell_check_files(files)
 }
 \seealso{
-Other spelling: \code{\link{spell_check_package}()},
-  \code{\link{wordlist}}
+Other spelling: 
+\code{\link{spell_check_package}()},
+\code{\link{wordlist}}
 }
 \concept{spelling}
