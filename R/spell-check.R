@@ -109,7 +109,7 @@ as_package <- function(pkg){
   structure(pkg, class = 'package')
 }
 
-# Find all occurences for each word
+# Find all occurrences for each word
 summarize_words <- function(file_names, found_line){
   words_by_file <- lapply(found_line, names)
   bad_words <- sort(unique(unlist(words_by_file)))
@@ -120,7 +120,20 @@ summarize_words <- function(file_names, found_line){
   out$found <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
-      paste0(basename(file_names[i]), ":", found_line[[i]][word])
+      if (requireNamespace("cli", quietly = TRUE)) {
+        the_line <- as.integer(found_line[[i]][word])
+        link <- cli::style_hyperlink(
+          paste0(basename(file_names[i]), ":", the_line),
+          paste0("file://", file_names[i]),
+          params = c(line = the_line, col = 1)
+        )
+        res <- cli::format_inline(link)
+
+      } else {
+        res <- paste0(basename(file_names[i]), ":", found_line[[i]][word])
+      }
+
+      res
     }, character(1))
   })
   structure(out, class = c("summary_spellcheck", "data.frame"))
