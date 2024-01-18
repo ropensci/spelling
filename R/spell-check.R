@@ -120,7 +120,7 @@ summarize_words <- function(file_names, found_line){
   out$found <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
-      if (requireNamespace("cli", quietly = TRUE)) {
+      if (interactive() && requireNamespace("cli", quietly = TRUE)) {
         the_line <- as.integer(found_line[[i]][word])
         link <- cli::style_hyperlink(
           paste0(basename(file_names[i]), ":", the_line),
