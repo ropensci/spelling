@@ -1,5 +1,4 @@
 dev
-dev
   - If cli is installed and your terminal supports it, hyperlinks are now displayed in interactive sessions. (@olivroy, #74)
 
 2.2.1

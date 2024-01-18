@@ -121,13 +121,36 @@ summarize_words <- function(file_names, found_line){
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
       if (interactive() && requireNamespace("cli", quietly = TRUE)) {
-        the_line <- as.integer(found_line[[i]][word])
+        line_chr <- found_line[[i]][word]
+        word_on_many_lines <- grepl(",", line_chr)
+
+        if (word_on_many_lines) {
+          first_line <- regmatches(line_chr, m = regexpr("\\d+", line_chr))
+          first_line <- as.integer(first_line)
+        } else {
+          first_line <- as.integer(found_line[[i]][word])
+        }
+
         link <- cli::style_hyperlink(
-          paste0(basename(file_names[i]), ":", the_line),
+          paste0(basename(file_names[i]), ":", first_line),
           paste0("file://", file_names[i]),
-          params = c(line = the_line, col = 1)
+          params = c(line = first_line, col = 1) # line must be integer / numeric
         )
+
         res <- cli::format_inline(link)
+
+        if (word_on_many_lines) {
+          all_lines <- unlist(strsplit(line_chr, split = ","))
+          for (i in 2:length(all_lines)) {
+            other_link <- cli::style_hyperlink(
+              paste0(all_lines[i]),
+              paste0("file://", file_names[i]),
+              params = c(line = as.integer(all_lines[i]), col = 1)
+            )
+            line_num_link <- cli::format_inline(other_link)
+            res <- paste(res, line_num_link, sep = ",")
+          }
+        }
 
       } else {
         res <- paste0(basename(file_names[i]), ":", found_line[[i]][word])
