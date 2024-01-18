@@ -141,11 +141,11 @@ summarize_words <- function(file_names, found_line){
 
         if (word_on_many_lines) {
           all_lines <- unlist(strsplit(line_chr, split = ","))
-          for (i in 2:length(all_lines)) {
+          for (j in 2:length(all_lines)) {
             other_link <- cli::style_hyperlink(
-              paste0(all_lines[i]),
+              paste0(all_lines[j]),
               paste0("file://", file_names[i]),
-              params = c(line = as.integer(all_lines[i]), col = 1)
+              params = c(line = as.integer(all_lines[j]), col = 1)
             )
             line_num_link <- cli::format_inline(other_link)
             res <- paste(res, line_num_link, sep = ",")
