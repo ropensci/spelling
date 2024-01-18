@@ -120,7 +120,8 @@ summarize_words <- function(file_names, found_line){
   out$found <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
-      if (interactive() && requireNamespace("cli", quietly = TRUE)) {
+      if (interactive() && requireNamespace("cli", quietly = TRUE) && cli::ansi_has_hyperlink_support()) {
+        # Support cli links to lines when available.
         line_chr <- found_line[[i]][word]
         word_on_many_lines <- grepl(",", line_chr)
 
@@ -137,6 +138,8 @@ summarize_words <- function(file_names, found_line){
           params = c(line = first_line, col = 1) # line must be integer / numeric
         )
 
+        # The first part of the hyperlink will always be
+        # <file name hyperlink:##1>
         res <- cli::format_inline(link)
 
         if (word_on_many_lines) {
@@ -148,11 +151,14 @@ summarize_words <- function(file_names, found_line){
               params = c(line = as.integer(all_lines[j]), col = 1)
             )
             line_num_link <- cli::format_inline(other_link)
+            # if many occurrences of the same word in the same file
+            # create a <file name hyperlink:##1,##2, etc.
             res <- paste(res, line_num_link, sep = ",")
           }
         }
 
       } else {
+        # original behavior if no hyperlink support, or non-interactive.
         res <- paste0(basename(file_names[i]), ":", found_line[[i]][word])
       }
 
