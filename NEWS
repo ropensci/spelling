@@ -1,3 +1,7 @@
+dev
+
+  - Support for spellchecking on Quarto files (@olivroy, #77)
+
 2.2.1
   - Fix for commonmark 1.7.0 change for auto-linked markdown URLs
 
