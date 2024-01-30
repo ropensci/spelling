@@ -46,6 +46,10 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
   # Strip bookdown text references, see: https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references
   values <- gsub("\\(ref:.*?\\)", "", values)
 
+  # Quarto references start with @, for example @sec-, @fig- @eq- etc. https://quarto.org/docs/authoring/cross-reference-options.html
+  # No special regex is necessary since all words containing @ are removed from
+  # spell check #9
+
   data.frame(
     text = values,
     position = sourcepos,
