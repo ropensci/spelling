@@ -201,10 +201,11 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
   if(nrow(results)){
     if(isTRUE(error)){
       output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
-      stop(output, call. = FALSE)
+      stop(output, "\n", "If these are false positive, run `spelling::update_wordlist()`.", call. = FALSE)
     } else {
       cat("Potential spelling errors:\n")
       print(results)
+      cat("If these are false positive, run `spelling::update_wordlist()`.")
     }
   }
   cat("All Done!\n")
