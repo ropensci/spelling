@@ -47,7 +47,7 @@ parse_text_md <- function(path, extensions = TRUE, yaml_fields = c("title" ,"sub
   values <- gsub("\\(ref:.*?\\)", "", values)
 
   # Strip Quarto text references, @sec-, @fig- @eq- etc. https://quarto.org/docs/authoring/cross-reference-options.html
-  values <- gsub("\\@\\(\\w+\\-.*?\\)", "", values)
+  values <- gsub("\\@\\w+\\-[[:graph:]]+", "", values)
 
   data.frame(
     text = values,
