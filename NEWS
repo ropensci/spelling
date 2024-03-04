@@ -1,6 +1,6 @@
-dev
-
+2.3.0
   - Support for spellchecking on Quarto files (@olivroy, #77)
+  - You can now specify a global wordlist file via the SPELLING_WORDLIST envvar
 
 2.2.1
   - Fix for commonmark 1.7.0 change for auto-linked markdown URLs
