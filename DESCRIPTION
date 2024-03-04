@@ -12,8 +12,8 @@ Description: Spell checking common document formats including latex, markdown, m
     define a 'wordlist' to allow custom terminology without having to abuse punctuation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-URL: https://docs.ropensci.org/spelling/ (website) 
-    https://github.com/ropensci/spelling (devel)
+URL: https://ropensci.r-universe.dev/spelling
+    https://docs.ropensci.org/spelling/ 
 BugReports: https://github.com/ropensci/spelling/issues
 Imports:
   commonmark,
