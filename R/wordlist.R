@@ -53,11 +53,18 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
 get_wordlist <- function(pkg = "."){
   pkg <- as_package(pkg)
   wordfile <- get_wordfile(pkg$path)
-  out <- if(file.exists(wordfile))
-    unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
-  as.character(out)
+  pkg_wordlist <- if(file.exists(wordfile))
+    read_wordfile(wordfile)
+  global_wordfile <- Sys.getenv('SPELLING_WORDLIST')
+  global_wordlist <- if(nchar(global_wordfile) && file.exists(global_wordfile))
+    read_wordfile(global_wordfile)
+  as.character(c(pkg_wordlist, global_wordlist))
 }
 
 get_wordfile <- function(path){
   normalizePath(file.path(path, "inst/WORDLIST"), mustWork = FALSE)
+}
+
+read_wordfile <- function(wordfile){
+  unlist(strsplit(readLines(wordfile, warn = FALSE, encoding = "UTF-8"), " ", fixed = TRUE))
 }
