@@ -150,10 +150,28 @@ print.summary_spellcheck <- function(x, ...){
   fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
   pretty_names <- sprintf(fmt, words)
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
-  for(i in seq_len(nrow(x))){
-    cat(pretty_names[i])
-    cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
-    cat("\n")
+  if (cli::ansi_has_hyperlink_support()) {
+    for(i in seq_len(nrow(x))){
+      # print word
+      cat(pretty_names[i])
+      for (j in seq_along(x$file_names[[i]])) {
+        # each file name
+        # print separator only for subsequent files
+        if (j != 1) cat(paste0("\n", sprintf(fmt, "")))
+
+        for (k in seq_along(x$line_numbers[[i]][[j]])) {
+          # link for each line of each file.
+          if (k == 1) cat(x$found[[i]][[j]])
+        }
+      }
+      cat("\n")
+    }
+  } else {
+    for(i in seq_len(nrow(x))){
+      cat(pretty_names[i])
+      cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
+      cat("\n")
+    }
   }
   invisible(x)
 }
