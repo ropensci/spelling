@@ -127,7 +127,7 @@ summarize_words <- function(file_names, found_line){
   out$file_names <- lapply(bad_words, function(word) {
     index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
     reports <- vapply(index, function(i){
-      file_names[i]
+      paste0("file://", file_names[i])
     }, character(1))
   })
   # gather line numbers for each match for each file.
@@ -150,18 +150,43 @@ print.summary_spellcheck <- function(x, ...){
   fmt <- paste0("%-", max(nchar(words), 0) + 3, "s")
   pretty_names <- sprintf(fmt, words)
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
-  if (cli::ansi_has_hyperlink_support()) {
+
+  # Diplay cli hyperlinks if console supports it.
+  # Show in RStudio interactively .
+  # https://github.com/ropensci/spelling/issues/74
+  display_hyperlinks <-
+    requireNamespace("cli", quietly = TRUE) &&
+    cli::ansi_has_hyperlink_support()
+
+  if (display_hyperlinks) {
     for(i in seq_len(nrow(x))){
       # print word
       cat(pretty_names[i])
       for (j in seq_along(x$file_names[[i]])) {
         # each file name
         # print separator only for subsequent files
-        if (j != 1) cat(paste0("\n", sprintf(fmt, "")))
-
-        for (k in seq_along(x$line_numbers[[i]][[j]])) {
-          # link for each line of each file.
-          if (k == 1) cat(x$found[[i]][[j]])
+        if (j != 1)  cat(paste0("\n", sprintf(fmt, "")))
+        found_str <- x$found[[i]][[j]]
+        first_match <- regmatches(found_str, m = regexpr(".+\\:\\d+", found_str))
+        lnk <- cli::style_hyperlink(
+          text = first_match,
+          url = x$file_names[[i]][[j]],
+          params = list(line = x$line_numbers[[i]][[j]][1L], col = 1)
+        )
+        cat(lnk) #file_name:<line>
+        n_matches <- length(x$line_numbers[[i]][[j]])
+        if (n_matches > 1) {
+          for (k in 2:n_matches) {
+            if (k == 2) cat(",")
+            # link for each line of each file.
+            lnk_line <- cli::style_hyperlink(
+              text = x$line_numbers[[i]][[j]][k],
+              url = x$file_names[[i]][[j]],
+              params = list(line = x$line_numbers[[i]][[j]][k], col = 1)
+            )
+            cat(lnk_line) # <line>
+            if (k != n_matches) cat(",")
+          }
         }
       }
       cat("\n")
