@@ -123,6 +123,20 @@ summarize_words <- function(file_names, found_line){
       paste0(basename(file_names[i]), ":", found_line[[i]][word])
     }, character(1))
   })
+  # Gather full file names
+  out$file_names <- lapply(bad_words, function(word) {
+    index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
+    reports <- vapply(index, function(i){
+      file_names[i]
+    }, character(1))
+  })
+  # gather line numbers for each match for each file.
+  out$line_numbers <- lapply(bad_words, function(word) {
+    index <- which(vapply(words_by_file, `%in%`, x = word, logical(1)))
+    reports <- lapply(index, function(i){
+      as.integer(unlist(strsplit(found_line[[i]][word], split = ",", fixed = TRUE)))
+    })
+  })
   structure(out, class = c("summary_spellcheck", "data.frame"))
 }
 
