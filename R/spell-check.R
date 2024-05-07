@@ -151,54 +151,59 @@ print.summary_spellcheck <- function(x, ...){
   pretty_names <- sprintf(fmt, words)
   cat(sprintf(fmt, "  WORD"), "  FOUND IN\n", sep = "")
 
-  # Diplay cli hyperlinks if console supports it.
-  # Show in RStudio interactively .
-  # https://github.com/ropensci/spelling/issues/74
   display_hyperlinks <-
     requireNamespace("cli", quietly = TRUE) &&
     cli::ansi_has_hyperlink_support()
 
   if (display_hyperlinks) {
-    for(i in seq_len(nrow(x))){
-      # print word
-      cat(pretty_names[i])
-      for (j in seq_along(x$file_names[[i]])) {
-        # each file name
-        # print separator only for subsequent files
-        if (j != 1)  cat(paste0("\n", sprintf(fmt, "")))
-        found_str <- x$found[[i]][[j]]
-        first_match <- regmatches(found_str, m = regexpr(".+\\:\\d+", found_str))
-        lnk <- cli::style_hyperlink(
-          text = first_match,
-          url = x$file_names[[i]][[j]],
-          params = list(line = x$line_numbers[[i]][[j]][1L], col = 1)
-        )
-        cat(lnk) #file_name:<line>
-        n_matches <- length(x$line_numbers[[i]][[j]])
-        if (n_matches > 1) {
-          for (k in 2:n_matches) {
-            if (k == 2) cat(",")
-            # link for each line of each file.
-            lnk_line <- cli::style_hyperlink(
-              text = x$line_numbers[[i]][[j]][k],
-              url = x$file_names[[i]][[j]],
-              params = list(line = x$line_numbers[[i]][[j]][k], col = 1)
-            )
-            cat(lnk_line) # <line>
-            if (k != n_matches) cat(",")
-          }
-        }
-      }
-      cat("\n")
-    }
-  } else {
-    for(i in seq_len(nrow(x))){
-      cat(pretty_names[i])
-      cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
-      cat("\n")
-    }
+    # Diplay cli hyperlinks if console supports it.
+    # Show in RStudio interactively .
+    # https://github.com/ropensci/spelling/issues/74
+    display_hyperlinks(x, pretty_names, words, fmt)
+    return(invisible(x))
+  }
+  for(i in seq_len(nrow(x))){
+    cat(pretty_names[i])
+    cat(paste(x$found[[i]], collapse = paste0("\n", sprintf(fmt, ""))))
+    cat("\n")
   }
   invisible(x)
+}
+
+display_hyperlinks <- function(x, pretty_names, words, fmt) {
+  for(i in seq_len(nrow(x))){
+    # print word
+    cat(pretty_names[i])
+    for (j in seq_along(x$file_names[[i]])) {
+      # each file name
+      # print separator only for subsequent files
+      if (j != 1)  cat(paste0("\n", sprintf(fmt, "")))
+      found_str <- x$found[[i]][[j]]
+      first_match <- regmatches(found_str, m = regexpr(".+\\:\\d+", found_str))
+      lnk <- cli::style_hyperlink(
+        text = first_match,
+        url = x$file_names[[i]][[j]],
+        params = list(line = x$line_numbers[[i]][[j]][1L], col = 1)
+      )
+      cat(lnk) #file_name:<line>
+      n_matches <- length(x$line_numbers[[i]][[j]])
+      if (n_matches > 1) {
+        for (k in 2:n_matches) {
+          if (k == 2) cat(",")
+          # link for each line of each file.
+          lnk_line <- cli::style_hyperlink(
+            text = x$line_numbers[[i]][[j]][k],
+            url = x$file_names[[i]][[j]],
+            params = list(line = x$line_numbers[[i]][[j]][k], col = 1)
+          )
+          cat(lnk_line) # <line>
+          if (k != n_matches) cat(",")
+        }
+      }
+    }
+    cat("\n")
+  }
+
 }
 
 #' @export
