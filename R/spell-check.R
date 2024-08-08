@@ -72,9 +72,9 @@ spell_check_package <- function(pkg = ".", vignettes = TRUE, use_wordlist = TRUE
 
   if(isTRUE(vignettes)){
     # Where to check for rmd/md files
-    vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.r?md$",
+    vign_files <- list.files(file.path(pkg$path, "vignettes"), pattern = "\\.q?r?md$",
                              ignore.case = TRUE, full.names = TRUE, recursive = TRUE)
-    root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?md",
+    root_files <- list.files(pkg$path, pattern = "(readme|news|changes|index).r?q?md",
                              ignore.case = TRUE, full.names = TRUE)
 
     # Markdown vignettes
@@ -201,10 +201,11 @@ spell_check_test <- function(vignettes = TRUE, error = FALSE, lang = NULL, skip_
   if(nrow(results)){
     if(isTRUE(error)){
       output <- sprintf("Potential spelling errors: %s\n", paste(results$word, collapse = ", "))
-      stop(output, call. = FALSE)
+      stop(output, "\n", "If these are false positive, run `spelling::update_wordlist()`.", call. = FALSE)
     } else {
       cat("Potential spelling errors:\n")
       print(results)
+      cat("If these are false positive, run `spelling::update_wordlist()`.")
     }
   }
   cat("All Done!\n")

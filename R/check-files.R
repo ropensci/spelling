@@ -30,7 +30,7 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
 }
 
 spell_check_file_one <- function(path, dict, ignore = character()) {
-  if(grepl("\\.r?md$",path, ignore.case = TRUE))
+  if(grepl("\\.r?q?md$",path, ignore.case = TRUE))
     return(spell_check_file_md(path, dict = dict))
   if(grepl("\\.rd$", path, ignore.case = TRUE))
     return(spell_check_file_rd(path, dict = dict))
