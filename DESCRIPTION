@@ -2,7 +2,7 @@ Package: spelling
 Title: Tools for Spell Checking in R
 Version: 2.3.0
 Authors@R: c(
-    person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut"),
+    person("Jeroen", "Ooms", , "jeroenooms@gmail.com", role = c("cre", "aut"),
       comment = c(ORCID = "0000-0002-4035-0289")),
     person("Jim", "Hester", , "james.hester@rstudio.com", role = "aut"))
 Description: Spell checking common document formats including latex, markdown, manual pages,
