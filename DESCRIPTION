@@ -1,6 +1,6 @@
 Package: spelling
 Title: Tools for Spell Checking in R
-Version: 2.3.0
+Version: 2.3.1
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroenooms@gmail.com", role = c("cre", "aut"),
       comment = c(ORCID = "0000-0002-4035-0289")),
