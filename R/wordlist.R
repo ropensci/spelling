@@ -36,7 +36,7 @@ update_wordlist <- function(pkg = ".", vignettes = TRUE, confirm = TRUE){
     }
     if(isTRUE(confirm) && length(words_added)){
       cat("Are you sure you want to update the wordlist?")
-      if (utils::menu(c("Yes", "No")) != 1){
+      if (interactive() && utils::menu(c("Yes", "No")) != 1){
         return(invisible())
       }
     }
