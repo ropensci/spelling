@@ -1,3 +1,7 @@
+dev
+  - spell_check_*() now display cli hyperlinks in console if your console
+    supports it (@olivroy, #74)
+
 2.3.0
   - Support for spellchecking on Quarto files (@olivroy, #77)
   - You can now specify a global wordlist file via the SPELLING_WORDLIST envvar
