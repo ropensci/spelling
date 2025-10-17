@@ -156,6 +156,9 @@ spell_check_setup <- function(pkg = ".", vignettes = TRUE, lang = "en-US", error
   pkg$language <- lang
   update_description(pkg, lang = lang)
   update_wordlist(pkg, vignettes = vignettes)
+  aspell <- file.path(pkg$path, '.aspell')
+  dir.create(aspell, showWarnings = FALSE)
+  file.copy(system.file('templates/defaults.R', package = 'spelling'), aspell, overwrite = TRUE)
   dir.create(file.path(pkg$path, "tests"), showWarnings = FALSE)
   writeLines(sprintf("if(requireNamespace('spelling', quietly = TRUE))
   spelling::spell_check_test(vignettes = %s, error = %s,

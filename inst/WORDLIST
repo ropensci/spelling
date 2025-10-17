@@ -1,8 +1,9 @@
-AppVeyor
 CMD
 RStudio
+WORDLIST
 devtools
 hunspell
-pkg
+readme
 rmd
 rnw
+wordlist
