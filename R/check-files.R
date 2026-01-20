@@ -25,11 +25,11 @@ spell_check_files <- function(path, ignore = character(), lang = "en_US"){
   lang <- normalize_lang(lang)
   dict <- hunspell::dictionary(lang, add_words = ignore)
   path <- sort(normalizePath(path, mustWork = TRUE))
-  lines <- lapply(path, spell_check_file_one, dict = dict)
+  lines <- lapply(path, spell_check_file_one, dict = dict, ignore = ignore)
   summarize_words(path, lines)
 }
 
-spell_check_file_one <- function(path, dict){
+spell_check_file_one <- function(path, dict, ignore = character()) {
   if(grepl("\\.r?q?md$",path, ignore.case = TRUE))
     return(spell_check_file_md(path, dict = dict))
   if(grepl("\\.rd$", path, ignore.case = TRUE))
@@ -37,7 +37,7 @@ spell_check_file_one <- function(path, dict){
   if(grepl("\\.(rnw|snw)$",path, ignore.case = TRUE))
     return(spell_check_file_knitr(path = path, format = "latex", dict = dict))
   if(grepl("\\.(tex)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "latex", dict = dict))
+    return(spell_check_file_plain(path = path, format = "latex", dict = dict, ignore = ignore))
   if(grepl("\\.(html?)$", path, ignore.case = TRUE)){
     try({
       path <- pre_filter_html(path)
@@ -45,10 +45,10 @@ spell_check_file_one <- function(path, dict){
     return(spell_check_file_plain(path = path, format = "html", dict = dict))
   }
   if(grepl("\\.(xml)$",path, ignore.case = TRUE))
-    return(spell_check_file_plain(path = path, format = "xml", dict = dict))
+    return(spell_check_file_plain(path = path, format = "xml", dict = dict, ignore = ignore))
   if(grepl("\\.(pdf)$",path, ignore.case = TRUE))
     return(spell_check_file_pdf(path = path, format = "text", dict = dict))
-  return(spell_check_file_plain(path = path, format = "text", dict = dict))
+  return(spell_check_file_plain(path = path, format = "text", dict = dict, ignore = ignore))
 }
 
 #' @rdname spell_check_files
@@ -85,13 +85,19 @@ spell_check_description_text <- function(file, dict){
   spell_check_plain(lines, dict = dict)
 }
 
-spell_check_file_rd <- function(rdfile, macros = NULL, dict) {
+spell_check_file_rd <- function(rdfile, macros = NULL, dict, ignore = character()) {
   text <- if (!length(macros)) {
     tools::RdTextFilter(rdfile)
   } else {
     tools::RdTextFilter(rdfile, macros = macros)
   }
+
   Encoding(text) <- "UTF-8"
+
+  if (!identical(ignore, character())) {
+    text <- pre_filter_plain_rd(text, ignore = ignore)
+  }
+
   spell_check_plain(text, dict = dict)
 }
 
@@ -115,8 +121,13 @@ spell_check_file_knitr <- function(path, format, dict){
   spell_check_plain(text, dict = dict)
 }
 
-spell_check_file_plain <- function(path, format, dict){
+spell_check_file_plain <- function(path, format, dict, ignore = character()){
   lines <- readLines(path, warn = FALSE, encoding = 'UTF-8')
+
+  if (!identical(ignore, character())) {
+    lines <- pre_filter_plain_rd(lines, ignore = ignore)
+  }
+
   words <- hunspell::hunspell_parse(lines, format = format, dict = dict)
   text <- vapply(words, paste, character(1), collapse = " ")
   spell_check_plain(text, dict = dict)
@@ -146,4 +157,20 @@ pre_filter_html <- function(path){
 # Therefore line numbers in spelling output should be unaffected
 replace_text <- function(x){
   gsub(".*", "", x, perl = TRUE)
+}
+
+# This removes all the words from the WORDLIST in the lines
+# This will correctly remove words such as "1st" and "one-two"
+pre_filter_plain_rd <- function(lines, ignore = character()) {
+  # Split the words out -- preserve the use of "-"
+  word_list <- strsplit(lines, "([^-[:alnum:][:punct:]])")
+
+  vapply(
+    word_list,
+    function(i) {
+      # Remove the ignore words from the line
+      paste(i[!i %in% ignore], collapse = " ")
+    },
+    character(1)
+  )
 }
